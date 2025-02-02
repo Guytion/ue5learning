@@ -44,9 +44,23 @@ class AThreeDMobaCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SwitchEquipmentAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* LockOnAction;
+
 public:
 	AThreeDMobaCharacter();
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
+	bool bIsEquipped = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
+	bool bIsAttacking = false;
 
 protected:
 
@@ -55,7 +69,15 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+
+	/** 装备/卸载装备 **/
+	void SwitchEquipment();	
+
+	/** 攻击敌人 **/
+	void Attack();
+
+	/** 锁定敌人 **/
+	void LockOn();
 
 protected:
 	// APawn interface

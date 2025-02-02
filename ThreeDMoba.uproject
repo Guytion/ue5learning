@@ -7,7 +7,10 @@
 		{
 			"Name": "ThreeDMoba",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [
@@ -17,6 +20,21 @@
 			"TargetAllowList": [
 				"Editor"
 			]
+		},
+		{
+			"Name": "QuestEditor",
+			"Enabled": false,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/b60ac0a5d2224b0c8ecebc14d4a1b178"
+		},
+		{
+			"Name": "Pedestrian_System",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a5ad0dbce5f743b3ba2a78d893d32b6f"
+		},
+		{
+			"Name": "NPC_Optimizator",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/1d7dbb65f6b24b2db0401a80d07e84d9"
 		}
 	]
 }

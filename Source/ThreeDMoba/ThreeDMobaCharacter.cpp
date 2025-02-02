@@ -86,6 +86,12 @@ void AThreeDMobaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AThreeDMobaCharacter::Look);
+
+		EnhancedInputComponent->BindAction(SwitchEquipmentAction, ETriggerEvent::Triggered, this, &AThreeDMobaCharacter::SwitchEquipment);
+
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AThreeDMobaCharacter::Attack);
+
+		EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &AThreeDMobaCharacter::LockOn);
 	}
 	else
 	{
@@ -127,4 +133,22 @@ void AThreeDMobaCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AThreeDMobaCharacter::SwitchEquipment()
+{
+	bIsEquipped = !bIsEquipped; // 将装备状态切换为相反状态
+}
+
+void AThreeDMobaCharacter::Attack()
+{
+	if (!bIsEquipped)
+	{
+		return;
+	}
+}
+
+void AThreeDMobaCharacter::LockOn()
+{
+	
 }

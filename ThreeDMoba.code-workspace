@@ -583,7 +583,7 @@
 				],
 				"cwd": "D:\\Program Files\\Epic Games\\UE_5.3",
 				"stopAtEntry": false,
-				"console": "externalTerminal",
+				"console": "internalConsole",
 				"type": "cppvsdbg",
 				"visualizerFile": "D:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Extras\\VisualStudioDebugging\\Unreal.natvis",
 				"sourceFileMap": {
