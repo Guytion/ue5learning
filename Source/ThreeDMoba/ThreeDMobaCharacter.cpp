@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -52,6 +54,10 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	LockCheckedEnemies = TArray<AActor*>();
+
+	PrimaryActorTick.bCanEverTick = true; 
 }
 
 void AThreeDMobaCharacter::BeginPlay()
@@ -91,7 +97,7 @@ void AThreeDMobaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AThreeDMobaCharacter::Attack);
 
-		EnhancedInputComponent->BindAction(LockOnAction, ETriggerEvent::Started, this, &AThreeDMobaCharacter::LockOn);
+		EnhancedInputComponent->BindAction(LockAction, ETriggerEvent::Started, this, &AThreeDMobaCharacter::Lock);
 	}
 	else
 	{
@@ -130,7 +136,34 @@ void AThreeDMobaCharacter::Look(const FInputActionValue& Value)
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
+		if (!bIsLocked) // 如果没有锁定，才允许旋转
+		{
+			AddControllerYawInput(LookAxisVector.X);
+		}
+		else
+		{
+			int32 EnemiesCount = LockCheckedEnemies.Num();
+			if (EnemiesCount > 0)
+			{
+				if (LookAxisVector.X > 0.8f)
+				{
+					LockEnimyIndex = (LockEnimyIndex + 1) % EnemiesCount; // 循环选择敌人
+				}
+				else if(LookAxisVector.X < -0.8f)
+				{
+					LockEnimyIndex = (LockEnimyIndex - 1 + EnemiesCount) % EnemiesCount; // 循环选择敌人
+				}
+				FVector Loc = GetActorLocation();
+				LockCheckedEnemies.Sort(
+					[Loc](const AActor& A, const AActor& B)
+					{
+						float DistanceA = FVector::DistXY(Loc, A.GetActorLocation());
+						float DistanceB = FVector::DistXY(Loc, B.GetActorLocation());
+						return DistanceA < DistanceB;
+					}
+				);
+			}
+		}
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
@@ -148,7 +181,105 @@ void AThreeDMobaCharacter::Attack()
 	}
 }
 
-void AThreeDMobaCharacter::LockOn()
+void AThreeDMobaCharacter::Lock()
 {
+	bIsLocked = !bIsLocked; // 切换锁定状态
+
+	if (bIsLocked)
+	{
+		TArray<AActor* > OutActors = TArray<AActor*>();
+		LockCheckedEnemies.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AThreeDMobaCharacter::StaticClass(), OutActors); // 获取所有ThreeDMobaCharacter类的Actor
+		FVector Loc = GetActorLocation();
+		for (AActor* Actor : OutActors)
+		{
+			if (this != Actor && CanSeeActor(Actor))
+			{
+				LockCheckedEnemies.Add(Actor);
+			}
+		}
+		LockCheckedEnemies.Sort(
+			[Loc](const AActor& A, const AActor& B)
+			{
+				float DistanceA = FVector::DistXY(Loc, A.GetActorLocation());
+				float DistanceB = FVector::DistXY(Loc, B.GetActorLocation());
+				return DistanceA < DistanceB;
+			}
+		);
+		LockEnimyIndex = 0; // 初始化锁定敌人索引为0
+	}
+}
+
+bool AThreeDMobaCharacter::CanSeeActor(const AActor* TargetActor) const
+{
+	if (!TargetActor)
+	{
+		return false;
+	}
+	FHitResult Hit;
+
+	FVector Start = GetActorLocation();
+	FVector End = TargetActor->GetActorLocation();
+	float Distance = FVector::DistXY(Start, End);
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+	float DeltaAngleDegrees = FMath::FindDeltaAngleDegrees(FollowCamera->GetComponentRotation().Yaw, LookAtRotation.Yaw);
+	if (DeltaAngleDegrees < 70.f && DeltaAngleDegrees > -70.f && Distance < 1000.f)
+	{
+		ECollisionChannel Channel = ECC_Visibility; // 使用Visibility通道进行射线检测
 	
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this); // 忽略自身
+		QueryParams.AddIgnoredActor(TargetActor); // 忽略目标Actor
+
+		// 执行射线检测
+		GetWorld()->LineTraceSingleByChannel(Hit, Start, End, Channel, QueryParams);
+		return !Hit.bBlockingHit; // 如果没有被阻挡，则可以看见目标Actor
+	}
+	else
+	{
+		return false; // 如果角度超出范围，则无法看见目标Actor
+	}
+}
+
+void AThreeDMobaCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bIsLocked)
+	{
+		if (LockCheckedEnemies.Num() > 0)
+		{
+			AActor* LockedEnemy = LockCheckedEnemies[LockEnimyIndex];
+			if (CanSeeActor(LockedEnemy))
+			{
+				LookAtTarget(LockedEnemy);
+			}
+			else
+			{
+				bIsLocked = false;
+				LockCheckedEnemies.Empty();
+			}
+		}
+		else
+		{
+			bIsLocked = false;
+			LockCheckedEnemies.Empty();
+		}
+	}
+	
+}
+
+void AThreeDMobaCharacter::LookAtTarget(const AActor* TargetActor)
+{
+	if (TargetActor != nullptr)
+	{
+		FVector Start = GetActorLocation();
+		FVector End = TargetActor->GetActorLocation();
+		// 计算旋转角度以看向目标Actor
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+		SetActorRotation(LookAtRotation);
+		AddControllerYawInput(FMath::FindDeltaAngleDegrees(GetControlRotation().Yaw, LookAtRotation.Yaw) / 100.f);
+
+	}
 }

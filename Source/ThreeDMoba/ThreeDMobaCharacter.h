@@ -51,7 +51,7 @@ class AThreeDMobaCharacter : public ACharacter
 	UInputAction* AttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LockOnAction;
+	UInputAction* LockAction;
 
 public:
 	AThreeDMobaCharacter();
@@ -61,6 +61,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
 	bool bIsAttacking = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
+	bool bIsLocked = false;
 
 protected:
 
@@ -77,7 +80,19 @@ protected:
 	void Attack();
 
 	/** 锁定敌人 **/
-	void LockOn();
+	void Lock();
+
+	void FindDirection();
+
+	TArray<AActor*> LockCheckedEnemies;
+
+	bool CanSeeActor(const AActor* TargetActor) const;
+
+	void LookAtTarget(const AActor* TargetActor);
+
+private:
+
+	int32 LockEnimyIndex;
 
 protected:
 	// APawn interface
@@ -85,6 +100,8 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
+
+	virtual void Tick(float DeltaTime) override;
 
 public:
 	/** Returns CameraBoom subobject **/
