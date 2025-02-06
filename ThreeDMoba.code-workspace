@@ -30,7 +30,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Debug",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -47,7 +47,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Debug",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -67,7 +67,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Debug",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -84,7 +84,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"DebugGame",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -101,7 +101,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"DebugGame",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -121,7 +121,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"DebugGame",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -138,7 +138,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Development",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -155,7 +155,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Development",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -175,7 +175,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Development",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -192,7 +192,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Test",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -209,7 +209,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Test",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -229,7 +229,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Test",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -246,7 +246,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Shipping",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -263,7 +263,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Shipping",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -283,7 +283,7 @@
 					"ThreeDMoba",
 					"Win64",
 					"Shipping",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -300,7 +300,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"Debug",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -317,7 +317,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"Debug",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -337,7 +337,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"Debug",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -354,7 +354,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"DebugGame",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -371,7 +371,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"DebugGame",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -391,7 +391,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"DebugGame",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -408,7 +408,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"Development",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -425,7 +425,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"Development",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -445,7 +445,7 @@
 					"ThreeDMobaEditor",
 					"Win64",
 					"Development",
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-waitmutex"
 				],
 				"problemMatcher": "$msCompile",
@@ -545,7 +545,7 @@
 				"program": "D:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-Debug.exe",
 				"preLaunchTask": "ThreeDMobaEditor Win64 Debug Build",
 				"args": [
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject"
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject"
 				],
 				"cwd": "D:\\Program Files\\Epic Games\\UE_5.3",
 				"stopAtEntry": false,
@@ -562,7 +562,7 @@
 				"program": "D:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor-Win64-DebugGame.exe",
 				"preLaunchTask": "ThreeDMobaEditor Win64 DebugGame Build",
 				"args": [
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject"
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject"
 				],
 				"cwd": "D:\\Program Files\\Epic Games\\UE_5.3",
 				"stopAtEntry": false,
@@ -579,7 +579,7 @@
 				"program": "D:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
 				"preLaunchTask": "ThreeDMobaEditor Win64 Development Build",
 				"args": [
-					"D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject"
+					"D:\\clone\\ue5learning\\ThreeDMoba.uproject"
 				],
 				"cwd": "D:\\Program Files\\Epic Games\\UE_5.3",
 				"stopAtEntry": false,
@@ -599,7 +599,7 @@
 				"args": [
 					"-projectfiles",
 					"-vscode",
-					"-project=D:\\Guyti\\Documents\\Unreal Projects\\ThreeDMoba\\ThreeDMoba.uproject",
+					"-project=D:\\clone\\ue5learning\\ThreeDMoba.uproject",
 					"-game",
 					"-engine",
 					"-dotnet"
