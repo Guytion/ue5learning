@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "TeamIdInterface.h"
 #include "ThreeDMobaCharacter.generated.h"
 
 class USpringArmComponent;
@@ -16,7 +17,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class AThreeDMobaCharacter : public ACharacter
+class AThreeDMobaCharacter : public ACharacter, public ITeamIdInterface
 {
 	GENERATED_BODY()
 
@@ -60,9 +61,6 @@ public:
 	bool bIsEquipped = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
-	bool bIsAttacking = false;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
 	bool bIsLocked = false;
 
 protected:
@@ -90,6 +88,21 @@ protected:
 
 	void LookAtTarget(const AActor* TargetActor);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	int32 TeamId = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
+	bool bIsAttacking = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Property")
+	class UHealthComponent* HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	UAnimMontage* GetHitMontage;
+
 private:
 
 	int32 LockEnimyIndex;
@@ -108,5 +121,11 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	virtual int32 GetTeamId_Implementation() const override { return TeamId; }
+
+	class AWeapon* GetAttachedWeapon() const;
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };
 

@@ -12,6 +12,8 @@
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Weapon.h"
+#include "HealthComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -56,6 +58,8 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 	LockCheckedEnemies = TArray<AActor*>();
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("生命值"));
 
 	PrimaryActorTick.bCanEverTick = true; 
 }
@@ -282,4 +286,33 @@ void AThreeDMobaCharacter::LookAtTarget(const AActor* TargetActor)
 		AddControllerYawInput(FMath::FindDeltaAngleDegrees(GetControlRotation().Yaw, LookAtRotation.Yaw) / 100.f);
 
 	}
+}
+
+AWeapon* AThreeDMobaCharacter::GetAttachedWeapon() const
+{
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors); // 获取所有附加的Actor
+	for (AActor* Actor : AttachedActors)
+	{
+		if (AWeapon* Weapon = Cast<AWeapon>(Actor))
+		{
+			return Weapon;
+		}
+	}
+	return nullptr;
+}
+
+float AThreeDMobaCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	// 计算实际伤害
+	float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	// 播放受击动画
+	if (GetHitMontage)
+	{
+		PlayAnimMontage(GetHitMontage);
+	}
+	// 扣除生命值
+	HealthComponent->LoseHealth(ActualDamage);
+
+	return ActualDamage;
 }
