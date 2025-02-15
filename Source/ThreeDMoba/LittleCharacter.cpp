@@ -85,3 +85,20 @@ float ALittleCharacter::TakeDamage(float Damage, struct FDamageEvent const& Dama
 
 	return ActualDamage;
 }
+
+void ALittleCharacter::OnDeath_Implementation()
+{
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors); // 获取所有附加的Actor
+	for (AActor* Actor : AttachedActors)
+	{
+		Actor->Destroy(); // 销毁附加的Actor
+	}
+	// 播放死亡动画
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+	// 销毁角色
+	Destroy();
+}

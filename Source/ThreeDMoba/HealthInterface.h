@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "TeamIdInterface.generated.h"
+#include "HealthInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UTeamIdInterface : public UInterface
+class UHealthInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,14 +16,15 @@ class UTeamIdInterface : public UInterface
 /**
  * 
  */
-class THREEDMOBA_API ITeamIdInterface
+class THREEDMOBA_API IHealthInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "队伍")
-	int32 GetTeamId() const;
-	virtual int32 GetTeamId_Implementation() const = 0;
+	UFUNCTION(BlueprintNativeEvent, Category = "生命")
+	void OnDeath();
+	virtual void OnDeath_Implementation() = 0;
+
 };

@@ -2,6 +2,7 @@
 
 
 #include "HealthComponent.h"
+#include "HealthInterface.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -29,6 +30,13 @@ void UHealthComponent::LoseHealth(float Amount)
 	if (Health <= 0)
 	{
 		Health = 0;
-		GetOwner()->Destroy();
+		if (GetOwner()->Implements<UHealthInterface>())
+		{
+			IHealthInterface::Execute_OnDeath(GetOwner());
+		}
+		else
+		{
+			GetOwner()->Destroy();
+		}
 	}
 }

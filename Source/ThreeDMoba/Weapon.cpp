@@ -54,7 +54,7 @@ void AWeapon::OnWeaponHit(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	
 	if (OtherActor == GetOwner()) return; // 忽略自身
-	UE_LOG(LogTemp, Warning, TEXT("武器击中了目标！"));
+	
 	if (bIsAttacking)
 	{
 		if (OtherActor->Implements<UTeamIdInterface>())

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "TeamIdInterface.h"
+#include "HealthInterface.h"
 #include "ThreeDMobaCharacter.generated.h"
 
 class USpringArmComponent;
@@ -17,7 +18,9 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class AThreeDMobaCharacter : public ACharacter, public ITeamIdInterface
+class AThreeDMobaCharacter : public ACharacter,
+public ITeamIdInterface,
+public IHealthInterface
 {
 	GENERATED_BODY()
 
@@ -103,6 +106,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	UAnimMontage* GetHitMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	UAnimMontage* DeathMontage;
+
 private:
 
 	int32 LockEnimyIndex;
@@ -123,6 +129,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	virtual int32 GetTeamId_Implementation() const override { return TeamId; }
+
+	virtual void OnDeath_Implementation() override;
 
 	class AWeapon* GetAttachedWeapon() const;
 

@@ -14,6 +14,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapon.h"
 #include "HealthComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -315,4 +316,22 @@ float AThreeDMobaCharacter::TakeDamage(float Damage, struct FDamageEvent const& 
 	HealthComponent->LoseHealth(ActualDamage);
 
 	return ActualDamage;
+}
+
+void AThreeDMobaCharacter::OnDeath_Implementation()
+{
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors); // 获取所有附加的Actor
+	for (AActor* Actor : AttachedActors)
+	{
+		Actor->Destroy(); // 销毁附加的Actor
+	}
+	// 播放死亡动画
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+	// 销毁角色
+	Destroy();
+	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 }
