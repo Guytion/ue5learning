@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "LittleCharacter.h"
-#include "Weapon.h"
-#include "HealthComponent.h"
+#include "Character/LittleCharacter.h"
+#include "ThreeDMoba/Weapon.h"
 
 // Sets default values
 ALittleCharacter::ALittleCharacter()
@@ -11,7 +10,7 @@ ALittleCharacter::ALittleCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("生命值"));
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 }
 
 // Called when the game starts or when spawned
@@ -80,25 +79,7 @@ float ALittleCharacter::TakeDamage(float Damage, struct FDamageEvent const& Dama
 	{
 		PlayAnimMontage(GetHitMontage);
 	}
-	// 扣除生命值
-	HealthComponent->LoseHealth(ActualDamage);
 
 	return ActualDamage;
 }
 
-void ALittleCharacter::OnDeath_Implementation()
-{
-	TArray<AActor*> AttachedActors;
-	GetAttachedActors(AttachedActors); // 获取所有附加的Actor
-	for (AActor* Actor : AttachedActors)
-	{
-		Actor->Destroy(); // 销毁附加的Actor
-	}
-	// 播放死亡动画
-	if (DeathMontage)
-	{
-		PlayAnimMontage(DeathMontage);
-	}
-	// 销毁角色
-	Destroy();
-}

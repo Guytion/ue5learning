@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "ThreeDMobaGameMode.h"
-#include "ThreeDMobaCharacter.h"
+#include "Game/ThreeDMobaGameMode.h"
+#include "Character/ThreeDMobaCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AThreeDMobaGameMode::AThreeDMobaGameMode()

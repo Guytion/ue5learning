@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TeamIdInterface.h"
+#include "Interaction/TeamIdInterface.h"
 #include "Weapon.generated.h"
 
 UCLASS()

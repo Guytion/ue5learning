@@ -2,7 +2,7 @@
 
 
 #include "AnimNotifyState_WeaponCollision.h"
-#include "LittleCharacter.h"
+#include "Character/LittleCharacter.h"
 #include "Weapon.h"
 
 void UAnimNotifyState_WeaponCollision::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
