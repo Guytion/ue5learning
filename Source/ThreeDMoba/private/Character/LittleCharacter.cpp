@@ -3,6 +3,9 @@
 
 #include "Character/LittleCharacter.h"
 #include "ThreeDMoba/Weapon.h"
+#include "AbilitySystem/TDMAbilitySystemComponent.h"
+#include "AbilitySystem/TDMAttributeSet.h"
+#include "AbilitySystem/TDMAbilitySystemLibrary.h"
 
 // Sets default values
 ALittleCharacter::ALittleCharacter()
@@ -11,6 +14,11 @@ ALittleCharacter::ALittleCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	AbilitySystemComponent = CreateDefaultSubobject<UTDMAbilitySystemComponent>(TEXT("AbilitySystem"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal); // 设置复制模式为混合模式(客户端和服务器都处理)
+
+	AttributeSet = CreateDefaultSubobject<UTDMAttributeSet>(TEXT("AttributeSet"));
 }
 
 // Called when the game starts or when spawned
@@ -18,6 +26,7 @@ void ALittleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	InitAbilityActorInfo();
 }
 
 // Called every frame
@@ -83,3 +92,20 @@ float ALittleCharacter::TakeDamage(float Damage, struct FDamageEvent const& Dama
 	return ActualDamage;
 }
 
+void ALittleCharacter::InitAbilityActorInfo()
+{
+	Super::InitAbilityActorInfo();
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	Cast<UTDMAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+
+	if (HasAuthority())
+    {
+        InitializeDefaultAttributes();
+    }
+}
+
+void ALittleCharacter::InitializeDefaultAttributes() const
+{
+	UTDMAbilitySystemLibrary::InitializeDefaultAttributes(this, AbilitySystemComponent);
+}

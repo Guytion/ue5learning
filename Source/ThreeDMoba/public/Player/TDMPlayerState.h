@@ -4,14 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "AbilitySystemInterface.h"
 #include "TDMPlayerState.generated.h"
+
+class UAttributeSet;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChanged, int32 /* 状态值 */);
 /**
  * 
  */
 UCLASS()
-class THREEDMOBA_API ATDMPlayerState : public APlayerState
+class THREEDMOBA_API ATDMPlayerState : public APlayerState,
+public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 	
@@ -42,6 +46,17 @@ public:
 	
 	void AddToSpellPoints(int32 InSpellPoints);
 	void SetSpellPoints(int32 InSpellPoints);
+
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override; // AbilitySystemInterface
+	UAttributeSet* GetAttributeSet() const { return AttributeSet; } // 获取属性集
+
+protected:
+
+	UPROPERTY(VisibleAnywhere, meta = (DisplayName = "技能系统组件"))
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent; // 能力系统组件
+
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet; // 属性集
 
 private:
 

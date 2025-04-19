@@ -6,6 +6,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
 #include "ThreeDMoba/ThreeDMoba.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 ATDMPlayerController::ATDMPlayerController()
 {
@@ -162,4 +164,14 @@ void ATDMPlayerController::Jump()
 void ATDMPlayerController::StopJumping()
 {
     GetCharacter()->StopJumping(); // 调用角色的停止跳跃函数
+}
+
+UTDMAbilitySystemComponent* ATDMPlayerController::GetASC()
+{
+    if (TDMAbilitySystemComponent == nullptr)
+    {
+        TDMAbilitySystemComponent = Cast<UTDMAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn()));
+    }
+    
+    return TDMAbilitySystemComponent; // 返回能力系统组件指针
 }

@@ -106,3 +106,18 @@ float AThreeDMobaCharacter::TakeDamage(float Damage, struct FDamageEvent const& 
 
 	return ActualDamage;
 }
+
+void AThreeDMobaCharacter::InitAbilityActorInfo()
+{
+
+}
+
+void AThreeDMobaCharacter::InitializeDefaultAttributes() const
+{
+	
+}
+
+UAbilitySystemComponent* AThreeDMobaCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}

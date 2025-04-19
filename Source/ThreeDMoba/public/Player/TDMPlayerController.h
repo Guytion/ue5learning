@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "AbilitySystem/TDMAbilitySystemComponent.h"
 #include "TDMPlayerController.generated.h"
 
 class UInputMappingContext;
@@ -74,4 +75,9 @@ private:
 
 	/** 锁定敌人 **/
 	void Lock();
+
+	UPROPERTY()
+	TObjectPtr<UTDMAbilitySystemComponent> TDMAbilitySystemComponent;
+
+	UTDMAbilitySystemComponent* GetASC();
 };

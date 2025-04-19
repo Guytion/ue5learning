@@ -19,6 +19,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeDefaultAttributes() const override; // 初始化默认属性
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

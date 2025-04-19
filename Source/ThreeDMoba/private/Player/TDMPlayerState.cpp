@@ -3,9 +3,17 @@
 
 #include "Player/TDMPlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "AbilitySystem/TDMAbilitySystemComponent.h"
+#include "AbilitySystem/TDMAttributeSet.h"
 
 ATDMPlayerState::ATDMPlayerState()
 {
+    AbilitySystemComponent = CreateDefaultSubobject<UTDMAbilitySystemComponent>(TEXT("AbilitySystemComponent")); // 创建能力系统组件
+    AbilitySystemComponent->SetIsReplicated(true);
+    AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed); // 设置复制模式为混合模式(客户端和服务器都处理)
+    
+    AttributeSet = CreateDefaultSubobject<UTDMAttributeSet>(TEXT("AttributeSet")); // 创建属性集
+
     NetUpdateFrequency = 100.f;
 }
 
@@ -86,3 +94,9 @@ void ATDMPlayerState::SetSpellPoints(int32 InSpellPoints)
     SpellPoints = InSpellPoints;
     OnSpellPointsChangedDelegate.Broadcast(SpellPoints);
 }
+
+UAbilitySystemComponent* ATDMPlayerState::GetAbilitySystemComponent() const
+{
+    return AbilitySystemComponent;
+}
+

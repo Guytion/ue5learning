@@ -10,6 +10,8 @@
 #include "HeroCharacter.generated.h"
 
 class UCameraComponent;
+class UGameplayAbility;
+
 /**
  * 
  */
@@ -32,6 +34,10 @@ public:
 
 	AWeapon* GetAttachedWeapon() const;
 
+	virtual void PossessedBy(AController* NewController) override;
+
+	virtual void OnRep_PlayerState() override;
+
 protected:
 
 	/** Camera boom positioning the camera behind the character */
@@ -44,7 +50,19 @@ protected:
 
 	bool CanSeeActor(const AActor* TargetActor) const;
 
+	void AddCharacterAbilities(); // 添加角色能力
+
+	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeDefaultAttributes() const override; // 初始化默认属性
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
+
 private:
 
 	int32 LockEnimyIndex;
+
+	UPROPERTY(EditAnywhere, Category = "英雄|技能", meta = (DisplayName = "起始主动技能组"))
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditAnywhere, Category = "英雄|技能", meta = (DisplayName = "起始被动技能组"))
+	TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities; // 起始被动技能为监听经验值
 };

@@ -3,6 +3,10 @@
 
 #include "Character/HeroCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "AbilitySystem/TDMAbilitySystemComponent.h"
+#include "Player/TDMPlayerState.h"
+#include "Player/TDMPlayerController.h"
+#include "UI/HUD/PlayerHUD.h"
 
 AHeroCharacter::AHeroCharacter()
 {
@@ -16,6 +20,24 @@ AHeroCharacter::AHeroCharacter()
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+}
+
+void AHeroCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+    // 在服务器上初始化玩家状态
+    InitAbilityActorInfo();
+
+	AddCharacterAbilities();
+}
+
+void AHeroCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+    
+    // 在客户端上初始化玩家状态
+    InitAbilityActorInfo();
 }
 
 AWeapon* AHeroCharacter::GetAttachedWeapon() const
@@ -61,4 +83,47 @@ bool AHeroCharacter::CanSeeActor(const AActor* TargetActor) const
 	{
 		return false; // 如果角度超出范围，则无法看见目标Actor
 	}
+}
+
+void AHeroCharacter::AddCharacterAbilities()
+{
+	UTDMAbilitySystemComponent* HeroASC = CastChecked<UTDMAbilitySystemComponent>(GetAbilitySystemComponent());
+	if (!HasAuthority()) return;
+
+	HeroASC->AddCharacterAbilities(StartupAbilities);
+	HeroASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
+}
+
+void AHeroCharacter::InitAbilityActorInfo()
+{
+	if (ATDMPlayerState* HeroPS = GetPlayerState<ATDMPlayerState>())
+	{
+		AbilitySystemComponent = HeroPS->GetAbilitySystemComponent();
+		AbilitySystemComponent->InitAbilityActorInfo(HeroPS, this);
+		Cast<UTDMAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+		AttributeSet = HeroPS->GetAttributeSet(); // 初始化属性集
+		
+		if (ATDMPlayerController* HeroPC = Cast<ATDMPlayerController>(GetController()))
+		{
+			if (APlayerHUD* PlayerHUD = Cast<APlayerHUD>(HeroPC->GetHUD()))
+			{
+				PlayerHUD->InitOverlay(HeroPC, HeroPS, AbilitySystemComponent, AttributeSet);
+			}
+		}
+	}
+}
+
+void AHeroCharacter::InitializeDefaultAttributes() const
+{
+	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
+}
+
+void AHeroCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(GameplayEffectClass);
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
 }
