@@ -22,6 +22,9 @@ public:
 
 	ATDMPlayerController();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Variable")
+	bool bIsLocked = false;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -53,10 +56,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> LockAction;
 
-private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> SwitchRight;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Variable")
-	bool bIsLocked = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> SwitchLeft;
+
+private:
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -75,6 +81,25 @@ private:
 
 	/** 锁定敌人 **/
 	void Lock();
+	TObjectPtr<AActor> LastActor;
+	TObjectPtr<AActor> ThisActor;
+	static void HighlightActor(AActor* InActor);
+	static void UnHighlightActor(AActor* InActor);
+	int32 CurrentLockIndex = INDEX_NONE;
+	void FindPotentialTargets();
+	void SwitchTarget(int32 Direction);
+	void OnSwitchTargetRight();
+    void OnSwitchTargetLeft();
+	void CancelLock();
+
+	UPROPERTY()
+	TArray<AActor*> LockCheckedEnemies;
+
+	UPROPERTY(EditDefaultsOnly, Category = "LockOn", meta = (DisplayName = "锁定半径"))
+    float LockOnRadius = 1000.0f;
+
+	// 视角控制
+    virtual void UpdateRotation(float DeltaTime) override;
 
 	UPROPERTY()
 	TObjectPtr<UTDMAbilitySystemComponent> TDMAbilitySystemComponent;

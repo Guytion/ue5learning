@@ -8,6 +8,9 @@
 #include "ThreeDMoba/ThreeDMoba.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Interaction/PlayerInterface.h"
+#include "Interaction/CombatInterface.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 ATDMPlayerController::ATDMPlayerController()
 {
@@ -49,6 +52,8 @@ void ATDMPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ATDMPlayerController::Attack);
 
 		EnhancedInputComponent->BindAction(LockAction, ETriggerEvent::Started, this, &ATDMPlayerController::Lock);
+		EnhancedInputComponent->BindAction(SwitchRight, ETriggerEvent::Completed, this, &ATDMPlayerController::OnSwitchTargetRight);
+		EnhancedInputComponent->BindAction(SwitchLeft, ETriggerEvent::Completed, this, &ATDMPlayerController::OnSwitchTargetLeft);
 	}
 	else
 	{
@@ -81,39 +86,10 @@ void ATDMPlayerController::Move(const FInputActionValue& Value)
 
 void ATDMPlayerController::Look(const FInputActionValue& Value)
 {
-	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-    APawn* ControlledPawn = GetPawn<APawn>();
-	if (!bIsLocked && ControlledPawn) // 如果没有锁定，才允许旋转
-    {
-        ControlledPawn->AddControllerYawInput(LookAxisVector.X);
-    }
-    else
-    {
-        /* int32 EnemiesCount = LockCheckedEnemies.Num();
-        if (EnemiesCount > 0)
-        {
-            if (LookAxisVector.X > 0.8f)
-            {
-                LockEnimyIndex = (LockEnimyIndex + 1) % EnemiesCount; // 循环选择敌人
-            }
-            else if(LookAxisVector.X < -0.8f)
-            {
-                LockEnimyIndex = (LockEnimyIndex - 1 + EnemiesCount) % EnemiesCount; // 循环选择敌人
-            }
-            FVector Loc = GetActorLocation();
-            LockCheckedEnemies.Sort(
-                [Loc](const AActor& A, const AActor& B)
-                {
-                    float DistanceA = FVector::DistXY(Loc, A.GetActorLocation());
-                    float DistanceB = FVector::DistXY(Loc, B.GetActorLocation());
-                    return DistanceA < DistanceB;
-                }
-            );
-        } */
-    }
-    ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);
+	if (!bIsLocked) AddYawInput(LookAxisVector.X);
+	AddPitchInput(LookAxisVector.Y);
 }
 
 void ATDMPlayerController::SwitchEquipment()
@@ -128,32 +104,28 @@ void ATDMPlayerController::Attack()
 
 void ATDMPlayerController::Lock()
 {
-	/* bIsLocked = !bIsLocked; // 切换锁定状态
+	bIsLocked = !bIsLocked;
 
-	if (bIsLocked)
+    if (bIsLocked)
+    {
+        if (GetPawn()->Implements<UPlayerInterface>())
+        {
+            IPlayerInterface::Execute_SetLockRotation(GetPawn(), bIsLocked);
+        }
+        
+		FindPotentialTargets();
+        if(LockCheckedEnemies.Num() > 0)
+        {
+            CurrentLockIndex = 0;
+            ThisActor = LockCheckedEnemies[CurrentLockIndex];
+            HighlightActor(ThisActor);
+        }
+	}
+	else
 	{
-		TArray<AActor* > OutActors = TArray<AActor*>();
-		LockCheckedEnemies.Empty();
-
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AThreeDMobaCharacter::StaticClass(), OutActors); // 获取所有ThreeDMobaCharacter类的Actor
-		FVector Loc = GetActorLocation();
-		for (AActor* Actor : OutActors)
-		{
-			if (this != Actor && CanSeeActor(Actor))
-			{
-				LockCheckedEnemies.Add(Actor);
-			}
-		}
-		LockCheckedEnemies.Sort(
-			[Loc](const AActor& A, const AActor& B)
-			{
-				float DistanceA = FVector::DistXY(Loc, A.GetActorLocation());
-				float DistanceB = FVector::DistXY(Loc, B.GetActorLocation());
-				return DistanceA < DistanceB;
-			}
-		);
-		LockEnimyIndex = 0; // 初始化锁定敌人索引为0
-	} */
+        CancelLock();
+	}
+	
 }
 
 void ATDMPlayerController::Jump()
@@ -174,4 +146,148 @@ UTDMAbilitySystemComponent* ATDMPlayerController::GetASC()
     }
     
     return TDMAbilitySystemComponent; // 返回能力系统组件指针
+}
+
+void ATDMPlayerController::HighlightActor(AActor* InActor)
+{
+    if (IsValid(InActor) and InActor->Implements<UPlayerInterface>())
+    {
+        IPlayerInterface::Execute_HighlightActor(InActor);
+    }
+}
+
+void ATDMPlayerController::UnHighlightActor(AActor* InActor)
+{
+    if (IsValid(InActor) and InActor->Implements<UPlayerInterface>())
+    {
+        IPlayerInterface::Execute_UnHighlightActor(InActor);
+    }
+}
+
+void ATDMPlayerController::FindPotentialTargets()
+{
+	LockCheckedEnemies.Empty(); // 清空锁定敌人列表
+
+	// 获取玩家位置
+    APawn* ControlledPawn = GetPawn<APawn>();
+    if(!ControlledPawn) return;
+
+    TArray<AActor*> OverlapActors;
+    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)); // 检测Pawn类型
+	TArray<AActor*> IgnoreActors;
+	IgnoreActors.Add(ControlledPawn);
+
+    UKismetSystemLibrary::SphereOverlapActors(
+        GetWorld(),
+        ControlledPawn->GetActorLocation(),
+        LockOnRadius,
+        ObjectTypes,
+        ACharacter::StaticClass(), // 替换为你的敌人基类
+        IgnoreActors,
+        OverlapActors
+    );
+
+    for (AActor* OverlapActor : OverlapActors)
+    {
+        if (ControlledPawn->Implements<UCombatInterface>() and
+            ICombatInterface::Execute_CanSeeActor(ControlledPawn, OverlapActor) and
+            OverlapActor->Implements<UPlayerInterface>())
+        {
+            LockCheckedEnemies.Add(OverlapActor);
+        }
+        
+    }
+
+    // 按距离排序
+    LockCheckedEnemies.Sort([ControlledPawn](const AActor& A, const AActor& B) {
+        return A.GetDistanceTo(ControlledPawn) < B.GetDistanceTo(ControlledPawn);
+    });
+}
+
+void ATDMPlayerController::SwitchTarget(int32 Direction)
+{
+    APawn* ControlledPawn = GetPawn<APawn>();
+	if(LockCheckedEnemies.Num() < 2 or !IsValid(ControlledPawn)) return;
+
+	LastActor = ThisActor;
+    UnHighlightActor(LastActor);
+
+    CurrentLockIndex = (CurrentLockIndex + Direction + LockCheckedEnemies.Num()) % LockCheckedEnemies.Num();
+    if (ControlledPawn->Implements<UCombatInterface>() and
+        ICombatInterface::Execute_CanSeeActor(ControlledPawn, LockCheckedEnemies[CurrentLockIndex])) // 如果下一个锁定的敌人在视线中，则更新ThisActor
+    {
+        ThisActor = LockCheckedEnemies[CurrentLockIndex];
+        HighlightActor(ThisActor);
+    }
+    else
+    {
+        FindPotentialTargets();
+        if(LockCheckedEnemies.IsEmpty())
+        {
+            CancelLock();
+            return;
+        }
+        CurrentLockIndex = 0;
+        ThisActor = LockCheckedEnemies[CurrentLockIndex];
+        HighlightActor(ThisActor);
+    }
+    
+}
+
+void ATDMPlayerController::OnSwitchTargetRight()
+{
+	SwitchTarget(1);
+}
+
+void ATDMPlayerController::OnSwitchTargetLeft()
+{
+	SwitchTarget(-1);
+}
+
+void ATDMPlayerController::UpdateRotation(float DeltaTime)
+{
+    
+	if(bIsLocked and IsValid(ThisActor))
+    {
+		
+        // 锁定状态下：强制看向目标
+        APawn* ControlledPawn = GetPawn<APawn>();
+        if(ControlledPawn->Implements<UCombatInterface>() and ICombatInterface::Execute_CanSeeActor(ControlledPawn, ThisActor))
+        {
+			// 计算旋转角度以看向目标Actor
+			FRotator LookAtRotation;
+            ICombatInterface::Execute_LookAtTarget(ControlledPawn, ThisActor, LookAtRotation);
+            float YawDelta = FMath::FindDeltaAngleDegrees(GetControlRotation().Yaw, LookAtRotation.Yaw);
+            
+            AddYawInput(YawDelta / 100.f);
+        }
+        else
+        {
+            LockCheckedEnemies.Empty();
+            CancelLock();
+        }
+        
+    }
+    Super::UpdateRotation(DeltaTime);
+}
+
+void ATDMPlayerController::CancelLock()
+{
+    if (ThisActor)
+    {
+        UnHighlightActor(ThisActor);
+        ThisActor = nullptr;
+    }
+    if (LastActor)
+    {
+        UnHighlightActor(LastActor);
+        LastActor = nullptr;
+    }
+    CurrentLockIndex = INDEX_NONE;
+    bIsLocked = false;
+    if (GetPawn()->Implements<UPlayerInterface>())
+    {
+        IPlayerInterface::Execute_SetLockRotation(GetPawn(), bIsLocked);
+    }
 }

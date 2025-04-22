@@ -103,6 +103,7 @@ void ALittleCharacter::InitAbilityActorInfo()
     {
         InitializeDefaultAttributes();
     }
+	OnASCRegisteredDelegate.Broadcast(AbilitySystemComponent);
 }
 
 void ALittleCharacter::InitializeDefaultAttributes() const

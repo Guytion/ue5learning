@@ -10,7 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "ThreeDMoba/Weapon.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "Net/UnrealNetwork.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AThreeDMobaCharacter
@@ -38,10 +38,14 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
+	// 启用移动组件同步
+    GetCharacterMovement()->SetIsReplicated(true);
+	// 提高同步精度
+    NetUpdateFrequency = 66.0f; // 默认为100
+    MinNetUpdateFrequency = 33.0f;
+    
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-
-	// LockCheckedEnemies = TArray<AActor*>();
 
 	PrimaryActorTick.bCanEverTick = false; 
 }
@@ -52,45 +56,23 @@ void AThreeDMobaCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AThreeDMobaCharacter::Tick(float DeltaTime)
+void AThreeDMobaCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::Tick(DeltaTime);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	/* if (bIsLocked)
-	{
-		if (LockCheckedEnemies.Num() > 0)
-		{
-			AActor* LockedEnemy = LockCheckedEnemies[LockEnimyIndex];
-			if (CanSeeActor(LockedEnemy))
-			{
-				LookAtTarget(LockedEnemy);
-			}
-			else
-			{
-				bIsLocked = false;
-				LockCheckedEnemies.Empty();
-			}
-		}
-		else
-		{
-			bIsLocked = false;
-			LockCheckedEnemies.Empty();
-		}
-	} */
-	
+	DOREPLIFETIME_CONDITION_NOTIFY(AThreeDMobaCharacter, CharacterRotation, COND_None, REPNOTIFY_Always);
 }
 
-void AThreeDMobaCharacter::LookAtTarget(const AActor* TargetActor)
+void AThreeDMobaCharacter::LookAtTarget_Implementation(const AActor* TargetActor, FRotator& LookAtRotation)
 {
 	if (TargetActor != nullptr)
 	{
 		FVector Start = GetActorLocation();
 		FVector End = TargetActor->GetActorLocation();
 		// 计算旋转角度以看向目标Actor
-		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
-		SetActorRotation(LookAtRotation);
-		AddControllerYawInput(FMath::FindDeltaAngleDegrees(GetControlRotation().Yaw, LookAtRotation.Yaw) / 100.f);
-
+		LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+		
+		ServerRotateToTarget(LookAtRotation);
 	}
 }
 
@@ -120,4 +102,59 @@ void AThreeDMobaCharacter::InitializeDefaultAttributes() const
 UAbilitySystemComponent* AThreeDMobaCharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+bool AThreeDMobaCharacter::CanSeeActor_Implementation(const AActor* TargetActor) const
+{
+	if (!TargetActor)
+	{
+		return false;
+	}
+	FHitResult Hit;
+
+	FVector Start = GetActorLocation();
+	FVector End = TargetActor->GetActorLocation();
+	float Distance = FVector::DistXY(Start, End);
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+	float DeltaAngleDegrees = FMath::FindDeltaAngleDegrees(GetActorRotation().Yaw, LookAtRotation.Yaw);
+	if (DeltaAngleDegrees < 70.f && DeltaAngleDegrees > -70.f && Distance < 1000.f)
+	{
+		ECollisionChannel Channel = ECC_Visibility; // 使用Visibility通道进行射线检测
+	
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this); // 忽略自身
+		QueryParams.AddIgnoredActor(TargetActor); // 忽略目标Actor
+
+		// 执行射线检测
+		GetWorld()->LineTraceSingleByChannel(Hit, Start, End, Channel, QueryParams);
+		return !Hit.bBlockingHit; // 如果没有被阻挡，则可以看见目标Actor
+	}
+	else
+	{
+		return false; // 如果角度超出范围，则无法看见目标Actor
+	}
+}
+
+void AThreeDMobaCharacter::ServerRotateToTarget_Implementation(const FRotator& Rotation)
+{
+	CharacterRotation = Rotation;
+	SetActorRotation(Rotation);
+}
+
+void AThreeDMobaCharacter::OnRep_CharacterRotation()
+{
+	// 服务器同步旋转信息到客户端
+	if (GetNetMode() != NM_DedicatedServer)
+    {
+        // 使用插值平滑过渡
+        const FRotator CurrentRot = GetActorRotation();
+        const FRotator TargetRot = CharacterRotation;
+        const FRotator NewRot = FMath::RInterpTo(CurrentRot, TargetRot, GetWorld()->GetDeltaSeconds(), 8.0f);
+        SetActorRotation(NewRot);
+    }
+}
+
+FOnASCRegistered& AThreeDMobaCharacter::GetOnASCRegisteredDelegate()
+{
+	return OnASCRegisteredDelegate;
 }

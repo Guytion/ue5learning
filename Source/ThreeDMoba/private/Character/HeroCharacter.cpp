@@ -7,6 +7,7 @@
 #include "Player/TDMPlayerState.h"
 #include "Player/TDMPlayerController.h"
 #include "UI/HUD/PlayerHUD.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AHeroCharacter::AHeroCharacter()
 {
@@ -53,38 +54,6 @@ AWeapon* AHeroCharacter::GetAttachedWeapon() const
 	}
 	return nullptr;
 }
-
-bool AHeroCharacter::CanSeeActor(const AActor* TargetActor) const
-{
-	if (!TargetActor)
-	{
-		return false;
-	}
-	FHitResult Hit;
-
-	FVector Start = GetActorLocation();
-	FVector End = TargetActor->GetActorLocation();
-	float Distance = FVector::DistXY(Start, End);
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
-	float DeltaAngleDegrees = FMath::FindDeltaAngleDegrees(FollowCamera->GetComponentRotation().Yaw, LookAtRotation.Yaw);
-	if (DeltaAngleDegrees < 70.f && DeltaAngleDegrees > -70.f && Distance < 1000.f)
-	{
-		ECollisionChannel Channel = ECC_Visibility; // 使用Visibility通道进行射线检测
-	
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this); // 忽略自身
-		QueryParams.AddIgnoredActor(TargetActor); // 忽略目标Actor
-
-		// 执行射线检测
-		GetWorld()->LineTraceSingleByChannel(Hit, Start, End, Channel, QueryParams);
-		return !Hit.bBlockingHit; // 如果没有被阻挡，则可以看见目标Actor
-	}
-	else
-	{
-		return false; // 如果角度超出范围，则无法看见目标Actor
-	}
-}
-
 void AHeroCharacter::AddCharacterAbilities()
 {
 	UTDMAbilitySystemComponent* HeroASC = CastChecked<UTDMAbilitySystemComponent>(GetAbilitySystemComponent());
@@ -102,6 +71,7 @@ void AHeroCharacter::InitAbilityActorInfo()
 		AbilitySystemComponent->InitAbilityActorInfo(HeroPS, this);
 		Cast<UTDMAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 		AttributeSet = HeroPS->GetAttributeSet(); // 初始化属性集
+		OnASCRegisteredDelegate.Broadcast(AbilitySystemComponent); // 广播ASC注册完成事件
 		
 		if (ATDMPlayerController* HeroPC = Cast<ATDMPlayerController>(GetController()))
 		{
@@ -126,4 +96,26 @@ void AHeroCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffe
 	ContextHandle.AddSourceObject(this);
 	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, ContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
+}
+
+void AHeroCharacter::HighlightActor_Implementation()
+{
+	bHighlighted = true;
+	GetMesh()->SetRenderCustomDepth(true);
+    GetMesh()->SetCustomDepthStencilValue(252);
+}
+
+void AHeroCharacter::UnHighlightActor_Implementation()
+{
+	bHighlighted = false;
+	GetMesh()->SetRenderCustomDepth(false);
+    GetMesh()->SetCustomDepthStencilValue(0);
+}
+
+void AHeroCharacter::SetLockRotation_Implementation(bool bIsLocked)
+{
+	if (GetCharacterMovement())
+    {
+        GetCharacterMovement()->bOrientRotationToMovement = !bIsLocked;
+    }
 }

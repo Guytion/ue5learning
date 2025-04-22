@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "ThreeDMoba/Weapon.h"
+#include "Interaction/PlayerInterface.h"
 #include "HeroCharacter.generated.h"
 
 class UCameraComponent;
@@ -16,7 +17,8 @@ class UGameplayAbility;
  * 
  */
 UCLASS()
-class THREEDMOBA_API AHeroCharacter : public AThreeDMobaCharacter
+class THREEDMOBA_API AHeroCharacter : public AThreeDMobaCharacter,
+public IPlayerInterface
 {
 	GENERATED_BODY()
 	
@@ -38,6 +40,12 @@ public:
 
 	virtual void OnRep_PlayerState() override;
 
+	/* Player Interface */
+	virtual void HighlightActor_Implementation() override;
+	virtual void UnHighlightActor_Implementation() override;
+	virtual void SetLockRotation_Implementation(bool bIsLocked) override;
+	/* Player Interface 结束 */
+
 protected:
 
 	/** Camera boom positioning the camera behind the character */
@@ -48,8 +56,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (DisplayName = "跟随摄像机"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	bool CanSeeActor(const AActor* TargetActor) const;
-
 	void AddCharacterAbilities(); // 添加角色能力
 
 	virtual void InitAbilityActorInfo() override;
@@ -58,11 +64,12 @@ protected:
 
 private:
 
-	int32 LockEnimyIndex;
-
 	UPROPERTY(EditAnywhere, Category = "英雄|技能", meta = (DisplayName = "起始主动技能组"))
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
 	UPROPERTY(EditAnywhere, Category = "英雄|技能", meta = (DisplayName = "起始被动技能组"))
 	TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities; // 起始被动技能为监听经验值
+
+	bool bHighlighted = false; // 用于记录当前是否高亮显示
+
 };
