@@ -8,6 +8,7 @@
 #include "ThreeDMoba/ThreeDMoba.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Input/TDMInputComponent.h"
 #include "Interaction/PlayerInterface.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -35,25 +36,25 @@ void ATDMPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
-    if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent)) {
-		
+    if (UTDMInputComponent* TDMInputComponent = Cast<UTDMInputComponent>(InputComponent)) // 需要在项目设置->引擎->输入->默认类->默认输入组件类中设置TDMInputComponent
+    {
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ATDMPlayerController::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ATDMPlayerController::StopJumping);
+		TDMInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ATDMPlayerController::Jump);
+		TDMInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ATDMPlayerController::StopJumping);
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATDMPlayerController::Move);
+		TDMInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATDMPlayerController::Move);
 
 		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATDMPlayerController::Look);
+		TDMInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATDMPlayerController::Look);
 
-		EnhancedInputComponent->BindAction(SwitchEquipmentAction, ETriggerEvent::Triggered, this, &ATDMPlayerController::SwitchEquipment);
+		TDMInputComponent->BindAction(SwitchEquipmentAction, ETriggerEvent::Triggered, this, &ATDMPlayerController::SwitchEquipment);
 
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ATDMPlayerController::Attack);
+		TDMInputComponent->BindAction(LockAction, ETriggerEvent::Started, this, &ATDMPlayerController::Lock);
+		TDMInputComponent->BindAction(SwitchRight, ETriggerEvent::Completed, this, &ATDMPlayerController::OnSwitchTargetRight);
+		TDMInputComponent->BindAction(SwitchLeft, ETriggerEvent::Completed, this, &ATDMPlayerController::OnSwitchTargetLeft);
 
-		EnhancedInputComponent->BindAction(LockAction, ETriggerEvent::Started, this, &ATDMPlayerController::Lock);
-		EnhancedInputComponent->BindAction(SwitchRight, ETriggerEvent::Completed, this, &ATDMPlayerController::OnSwitchTargetRight);
-		EnhancedInputComponent->BindAction(SwitchLeft, ETriggerEvent::Completed, this, &ATDMPlayerController::OnSwitchTargetLeft);
+        TDMInputComponent->BindAbilityActions(InputConfig, this, &ATDMPlayerController::AbilityInputTagPressed, &ATDMPlayerController::AbilityInputTagReleased, &ATDMPlayerController::AbilityInputTagHeld);
 	}
 	else
 	{
@@ -97,11 +98,6 @@ void ATDMPlayerController::SwitchEquipment()
 	
 }
 
-void ATDMPlayerController::Attack()
-{
-	
-}
-
 void ATDMPlayerController::Lock()
 {
 	bIsLocked = !bIsLocked;
@@ -112,6 +108,10 @@ void ATDMPlayerController::Lock()
         {
             IPlayerInterface::Execute_SetLockRotation(GetPawn(), bIsLocked);
         }
+        else
+        {
+            return;
+        }
         
 		FindPotentialTargets();
         if(LockCheckedEnemies.Num() > 0)
@@ -119,6 +119,7 @@ void ATDMPlayerController::Lock()
             CurrentLockIndex = 0;
             ThisActor = LockCheckedEnemies[CurrentLockIndex];
             HighlightActor(ThisActor);
+            ICombatInterface::Execute_SetCombatTarget(GetPawn(), ThisActor);
         }
 	}
 	else
@@ -232,7 +233,7 @@ void ATDMPlayerController::SwitchTarget(int32 Direction)
         ThisActor = LockCheckedEnemies[CurrentLockIndex];
         HighlightActor(ThisActor);
     }
-    
+    ICombatInterface::Execute_SetCombatTarget(GetPawn(), ThisActor);
 }
 
 void ATDMPlayerController::OnSwitchTargetRight()
@@ -261,6 +262,7 @@ void ATDMPlayerController::UpdateRotation(float DeltaTime)
             float YawDelta = FMath::FindDeltaAngleDegrees(GetControlRotation().Yaw, LookAtRotation.Yaw);
             
             AddYawInput(YawDelta / 100.f);
+            
         }
         else
         {
@@ -289,5 +291,21 @@ void ATDMPlayerController::CancelLock()
     if (GetPawn()->Implements<UPlayerInterface>())
     {
         IPlayerInterface::Execute_SetLockRotation(GetPawn(), bIsLocked);
+        ICombatInterface::Execute_SetCombatTarget(GetPawn(), nullptr);
     }
+}
+
+void ATDMPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+    if (GetASC()) GetASC()->AbilityInputTagPressed(InputTag);
+}
+
+void ATDMPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+    if (GetASC()) GetASC()->AbilityInputTagReleased(InputTag);
+}
+
+void ATDMPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+    if (GetASC()) GetASC()->AbilityInputTagHeld(InputTag);
 }

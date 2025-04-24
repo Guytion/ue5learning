@@ -21,6 +21,8 @@ AHeroCharacter::AHeroCharacter()
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	NetPriority = 5.0f; // 提升同步优先级（默认4.0）
 }
 
 void AHeroCharacter::PossessedBy(AController* NewController)
@@ -43,7 +45,7 @@ void AHeroCharacter::OnRep_PlayerState()
 
 AWeapon* AHeroCharacter::GetAttachedWeapon() const
 {
-	TArray<AActor*> AttachedActors;
+	/* TArray<AActor*> AttachedActors;
 	GetAttachedActors(AttachedActors); // 获取所有附加的Actor
 	for (AActor* Actor : AttachedActors)
 	{
@@ -51,7 +53,7 @@ AWeapon* AHeroCharacter::GetAttachedWeapon() const
 		{
 			return Weapon;
 		}
-	}
+	} */
 	return nullptr;
 }
 void AHeroCharacter::AddCharacterAbilities()
@@ -119,3 +121,4 @@ void AHeroCharacter::SetLockRotation_Implementation(bool bIsLocked)
         GetCharacterMovement()->bOrientRotationToMovement = !bIsLocked;
     }
 }
+

@@ -10,6 +10,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UInputConfig;
 /**
  * 
  */
@@ -51,9 +52,6 @@ protected:
 	TObjectPtr<UInputAction> SwitchEquipmentAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	TObjectPtr<UInputAction> AttackAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> LockAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -61,6 +59,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> SwitchLeft;
+
+	/** 锁定敌人 **/
+	TObjectPtr<AActor> LastActor;
+	TObjectPtr<AActor> ThisActor;
 
 private:
 
@@ -76,13 +78,8 @@ private:
 	/** 装备/卸载装备 **/
 	void SwitchEquipment();	
 
-	/** 攻击敌人 **/
-	void Attack();
-
 	/** 锁定敌人 **/
 	void Lock();
-	TObjectPtr<AActor> LastActor;
-	TObjectPtr<AActor> ThisActor;
 	static void HighlightActor(AActor* InActor);
 	static void UnHighlightActor(AActor* InActor);
 	int32 CurrentLockIndex = INDEX_NONE;
@@ -105,4 +102,11 @@ private:
 	TObjectPtr<UTDMAbilitySystemComponent> TDMAbilitySystemComponent;
 
 	UTDMAbilitySystemComponent* GetASC();
+
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	TObjectPtr<UInputConfig> InputConfig;
 };

@@ -35,9 +35,14 @@ bool FTDMGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Ma
 		{
 			RepBits |= 1 << 6;
 		}
+		if (DamageType.IsValid())
+		{
+			RepBits |= 1 << 7;
+		}
+		
 	}
 
-    Ar.SerializeBits(&RepBits, 7);
+    Ar.SerializeBits(&RepBits, 8);
 
     if (RepBits & (1 << 0))
 	{
@@ -79,7 +84,29 @@ bool FTDMGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Ma
 	{
 		bHasWorldOrigin = false;
 	}
+	if (RepBits & (1 << 7))
+	{
+		if (Ar.IsLoading())
+		{
+			if (!DamageType.IsValid())
+			{
+				DamageType = TSharedPtr<FGameplayTag>(new FGameplayTag());
+			}
+		}
+		DamageType->NetSerialize(Ar, Map, bOutSuccess);
+	}
+
+	if (Ar.IsLoading())
+	{
+		AddInstigator(Instigator.Get(), EffectCauser.Get()); // 为了初始化发起者(Instigator)AbilitySystemComponent
+	}
 
     bOutSuccess = true;
 	return true;
+}
+
+void FTDMGameplayEffectContext::AddDamageType(const FGameplayTag& InDamageType)
+{
+	if (!DamageType.IsValid()) return;
+	DamageType = MakeShared<FGameplayTag>(InDamageType);
 }

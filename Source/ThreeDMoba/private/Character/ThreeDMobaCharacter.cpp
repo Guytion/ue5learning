@@ -11,6 +11,7 @@
 #include "ThreeDMoba/Weapon.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "TDMGameplayTags.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AThreeDMobaCharacter
@@ -40,13 +41,20 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 
 	// 启用移动组件同步
     GetCharacterMovement()->SetIsReplicated(true);
+    GetCharacterMovement()->MaxSimulationTimeStep = 0.008f; // 提高物理模拟精度
+	GetCharacterMovement()->NetworkSmoothingMode = ENetworkSmoothingMode::Linear; // 线性插值模式
+    GetCharacterMovement()->NetworkSimulatedSmoothLocationTime = 0.1f; // 平滑时间窗口
 	// 提高同步精度
-    NetUpdateFrequency = 66.0f; // 默认为100
-    MinNetUpdateFrequency = 33.0f;
+    NetUpdateFrequency = 144.0f; // 默认为100
+    MinNetUpdateFrequency = 120.0f;
     
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(GetMesh(), FName("Weapon_R"));
+	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	PrimaryActorTick.bCanEverTick = false; 
 }
 
@@ -61,9 +69,10 @@ void AThreeDMobaCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION_NOTIFY(AThreeDMobaCharacter, CharacterRotation, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(AThreeDMobaCharacter, CombatTarget, COND_None, REPNOTIFY_Always);
 }
 
-void AThreeDMobaCharacter::LookAtTarget_Implementation(const AActor* TargetActor, FRotator& LookAtRotation)
+void AThreeDMobaCharacter::LookAtTarget_Implementation(AActor* TargetActor, FRotator& LookAtRotation)
 {
 	if (TargetActor != nullptr)
 	{
@@ -157,4 +166,77 @@ void AThreeDMobaCharacter::OnRep_CharacterRotation()
 FOnASCRegistered& AThreeDMobaCharacter::GetOnASCRegisteredDelegate()
 {
 	return OnASCRegisteredDelegate;
+}
+
+void AThreeDMobaCharacter::Jump()
+{
+	if (GetLocalRole() == ROLE_AutonomousProxy) {
+        ServerJump(); // 显式调用RPC
+    }
+    Super::Jump();
+}
+
+void AThreeDMobaCharacter::ServerJump_Implementation()
+{
+    if (CanJump()) {
+        Super::Jump();
+    }
+}
+
+void AThreeDMobaCharacter::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	if (HasAuthority())
+	{
+		CombatTarget = InCombatTarget;
+	}
+	else
+	{
+		ServerSetCombatTarget(InCombatTarget);
+	}
+	
+}
+
+AActor* AThreeDMobaCharacter::GetCombatTarget_Implementation() const
+{
+	if (CombatTarget)
+	{
+		return CombatTarget;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+void AThreeDMobaCharacter::ServerSetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+void AThreeDMobaCharacter::OnRep_CombatTarget()
+{
+	
+}
+
+TArray<FTaggedMontage> AThreeDMobaCharacter::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
+}
+
+FVector AThreeDMobaCharacter::GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag)
+{
+	const FTDMGameplayTags& GameplayTags = FTDMGameplayTags::Get();
+	if (SocketTag.MatchesTagExact(GameplayTags.CombatSocket_Weapon) && IsValid(Weapon))
+	{
+		return Weapon->GetSocketLocation(WeaponTipSocketName);
+	}
+	if (SocketTag.MatchesTagExact(GameplayTags.CombatSocket_RightHand))
+	{
+		return GetMesh()->GetSocketLocation(RightHandSocketName);
+	}
+	if (SocketTag.MatchesTagExact(GameplayTags.CombatSocket_LeftHand))
+	{
+		return GetMesh()->GetSocketLocation(LeftHandSocketName);
+	}
+	return FVector();
 }

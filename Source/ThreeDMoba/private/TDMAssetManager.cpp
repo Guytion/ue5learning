@@ -2,6 +2,7 @@
 
 
 #include "TDMAssetManager.h"
+#include "TDMGameplayTags.h"
 
 UTDMAssetManager& UTDMAssetManager::Get()
 {
@@ -9,4 +10,11 @@ UTDMAssetManager& UTDMAssetManager::Get()
 
     UTDMAssetManager* Manager = Cast<UTDMAssetManager>(GEngine->AssetManager);
     return *Manager;
+}
+
+void UTDMAssetManager::StartInitialLoading()
+{
+    Super::StartInitialLoading();
+
+    FTDMGameplayTags::InitializeNativeGameplayTags(); // 初始化游戏标签
 }

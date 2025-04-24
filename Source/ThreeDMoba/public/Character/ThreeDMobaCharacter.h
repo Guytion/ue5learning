@@ -24,6 +24,11 @@ public:
 
 	AThreeDMobaCharacter();
 
+	virtual void Jump() override;
+
+	UFUNCTION(Server, Reliable)
+	void ServerJump();
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual int32 GetTeamId_Implementation() const override { return TeamId; }
 
@@ -33,8 +38,12 @@ public:
 
 	/* Combat Interface  */
 	virtual bool CanSeeActor_Implementation(const AActor* TargetActor) const override;
-	virtual void LookAtTarget_Implementation(const AActor* TargetActor, FRotator& LookAtRotation) override;
+	virtual void LookAtTarget_Implementation(AActor* TargetActor, FRotator& LookAtRotation) override;
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override; // 获取角色技能系统组件注册事件
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	/* Combat Interface 结束 */
 
 	FOnASCRegistered OnASCRegisteredDelegate; // 角色技能系统组件注册事件
@@ -46,9 +55,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
 	bool bIsAttacking = false;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
-	UAnimMontage* AttackMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	UAnimMontage* GetHitMontage;
@@ -67,8 +73,25 @@ protected:
 	UPROPERTY(meta = (DisplayName = "属性集"))
 	TObjectPtr<UAttributeSet> AttributeSet; // 属性集
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "角色属性", meta = (DisplayName = "主要属性"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "角色|属性", meta = (DisplayName = "主要属性"))
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "角色|武器", meta = (DisplayName = "武器"))
+	TObjectPtr<USkeletalMeshComponent> Weapon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "角色|战斗", meta = (DisplayName = "普通攻击动画蒙太奇"))
+	TArray<FTaggedMontage> AttackMontages;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "角色|武器", meta = (DisplayName = "武器战斗插槽"))
+	FName WeaponTipSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "角色|战斗", meta = (DisplayName = "左手战斗插槽"))
+	FName LeftHandSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "角色|战斗", meta = (DisplayName = "右手战斗插槽"))
+	FName RightHandSocketName;
+
+	// 网络同步
 
 	UFUNCTION(Server, Reliable)
 	void ServerRotateToTarget(const FRotator& Rotation);
@@ -79,5 +102,17 @@ protected:
 	UFUNCTION()
 	void OnRep_CharacterRotation();
 
+private:
+
+	UPROPERTY(ReplicatedUsing = OnRep_CombatTarget)
+	TObjectPtr<AActor> CombatTarget;
+
+	// 网络同步
+
+	UFUNCTION()
+	void OnRep_CombatTarget();
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetCombatTarget(AActor* InCombatTarget);
 };
 

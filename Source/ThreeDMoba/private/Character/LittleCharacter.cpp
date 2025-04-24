@@ -34,7 +34,7 @@ void ALittleCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsAttacking && CurrentAttackTime > 0)
+	/* if (bIsAttacking && CurrentAttackTime > 0)
 	{
 		CurrentAttackTime -= DeltaTime;
 		if (CurrentAttackTime <= 0)
@@ -44,7 +44,7 @@ void ALittleCharacter::Tick(float DeltaTime)
 			AWeapon* Weapon = GetAttachedWeapon();
 			Weapon->bIsAttacking = bIsAttacking;
 		}
-	}
+	} */
 }
 
 // Called to bind functionality to input
@@ -56,18 +56,18 @@ void ALittleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ALittleCharacter::Attack()
 {
-	if (AttackMontage)
+	/* if (AttackMontage)
 	{
 		bIsAttacking = true;
 		float AttackMontageDuration = PlayAnimMontage(AttackMontage);
 		AWeapon* Weapon = GetAttachedWeapon();
 		Weapon->bIsAttacking = bIsAttacking;
-	}
+	} */
 }
 
 AWeapon* ALittleCharacter::GetAttachedWeapon() const
 {
-	TArray<AActor*> AttachedActors;
+	/* TArray<AActor*> AttachedActors;
 	GetAttachedActors(AttachedActors); // 获取所有附加的Actor
 	for (AActor* Actor : AttachedActors)
 	{
@@ -75,7 +75,7 @@ AWeapon* ALittleCharacter::GetAttachedWeapon() const
 		{
 			return Weapon;
 		}
-	}
+	} */
 	return nullptr;
 }
 

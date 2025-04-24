@@ -71,5 +71,4 @@ private:
 	TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities; // 起始被动技能为监听经验值
 
 	bool bHighlighted = false; // 用于记录当前是否高亮显示
-
 };

@@ -18,4 +18,7 @@ public:
 
 	static UTDMAssetManager& Get();
 
+protected:
+
+	virtual void StartInitialLoading() override; // 覆盖虚函数，项目启动时加载初始资源
 };
