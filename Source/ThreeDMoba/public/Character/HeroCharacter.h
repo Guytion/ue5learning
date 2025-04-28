@@ -59,8 +59,6 @@ protected:
 	void AddCharacterAbilities(); // 添加角色能力
 
 	virtual void InitAbilityActorInfo() override;
-	virtual void InitializeDefaultAttributes() const override; // 初始化默认属性
-	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
 
 private:
 

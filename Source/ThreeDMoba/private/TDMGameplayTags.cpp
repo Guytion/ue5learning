@@ -8,6 +8,9 @@ FTDMGameplayTags FTDMGameplayTags::GameplayTags; // 定义静态变量并初始�
 
 void FTDMGameplayTags::InitializeNativeGameplayTags()
 {
+    GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString(TEXT("玩家死亡前所能承受的最大伤害")));
+    GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxMana"), FString(TEXT("玩家释放技能的最大消耗")));
+
     /* 输入标签 */
     GameplayTags.InputTag_KeyMouse_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.KeyMouse.LMB"), FString(TEXT("鼠标左键")));
     

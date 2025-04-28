@@ -32,6 +32,7 @@ void AHeroCharacter::PossessedBy(AController* NewController)
     // 在服务器上初始化玩家状态
     InitAbilityActorInfo();
 
+	InitializeDefaultAttributes();
 	AddCharacterAbilities();
 }
 
@@ -83,21 +84,6 @@ void AHeroCharacter::InitAbilityActorInfo()
 			}
 		}
 	}
-}
-
-void AHeroCharacter::InitializeDefaultAttributes() const
-{
-	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
-}
-
-void AHeroCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
-{
-	check(IsValid(GetAbilitySystemComponent()));
-	check(GameplayEffectClass);
-	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
-	ContextHandle.AddSourceObject(this);
-	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, ContextHandle);
-	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
 }
 
 void AHeroCharacter::HighlightActor_Implementation()

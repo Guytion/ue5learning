@@ -66,6 +66,7 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 	virtual void InitializeDefaultAttributes() const; // 初始化默认属性
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
 
 	UPROPERTY(meta = (DisplayName = "技能系统组件"))
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent; // 技能系统组件
@@ -75,6 +76,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "角色|属性", meta = (DisplayName = "主要属性"))
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "角色|属性", meta = (DisplayName = "次生属性"))
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "角色|属性", meta = (DisplayName = "关键属性"))
+	TSubclassOf<UGameplayEffect> InitVitalAttributes;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "角色|武器", meta = (DisplayName = "武器"))
 	TObjectPtr<USkeletalMeshComponent> Weapon;

@@ -12,6 +12,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "TDMGameplayTags.h"
+#include "AbilitySystemComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AThreeDMobaCharacter
@@ -54,6 +55,7 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), FName("Weapon_R"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// Weapon->SetIsReplicated(true);
 	
 	PrimaryActorTick.bCanEverTick = false; 
 }
@@ -70,6 +72,7 @@ void AThreeDMobaCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 	DOREPLIFETIME_CONDITION_NOTIFY(AThreeDMobaCharacter, CharacterRotation, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(AThreeDMobaCharacter, CombatTarget, COND_None, REPNOTIFY_Always);
+	// DOREPLIFETIME_CONDITION_NOTIFY(AThreeDMobaCharacter, WeaponTipSocketName, COND_None, REPNOTIFY_Always);
 }
 
 void AThreeDMobaCharacter::LookAtTarget_Implementation(AActor* TargetActor, FRotator& LookAtRotation)
@@ -105,7 +108,19 @@ void AThreeDMobaCharacter::InitAbilityActorInfo()
 
 void AThreeDMobaCharacter::InitializeDefaultAttributes() const
 {
-	
+	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
+	ApplyEffectToSelf(DefaultSecondaryAttributes, 1.f);
+	ApplyEffectToSelf(InitVitalAttributes, 1.f);
+}
+
+void AThreeDMobaCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(GameplayEffectClass);
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
 }
 
 UAbilitySystemComponent* AThreeDMobaCharacter::GetAbilitySystemComponent() const

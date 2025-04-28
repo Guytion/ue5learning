@@ -108,5 +108,6 @@ void ALittleCharacter::InitAbilityActorInfo()
 
 void ALittleCharacter::InitializeDefaultAttributes() const
 {
-	UTDMAbilitySystemLibrary::InitializeDefaultAttributes(this, AbilitySystemComponent);
+	Super::InitializeDefaultAttributes();
+	// UTDMAbilitySystemLibrary::InitializeDefaultAttributes(this, AbilitySystemComponent);
 }

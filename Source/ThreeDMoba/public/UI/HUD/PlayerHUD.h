@@ -8,6 +8,7 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+class UTDMUserWidget;
 
 /**
  * 
@@ -20,4 +21,12 @@ class THREEDMOBA_API APlayerHUD : public AHUD
 public:
 
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
+
+private:
+
+	UPROPERTY()
+	TObjectPtr<UTDMUserWidget> OverlayWidget;
+
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "覆层控件类"))
+	TSubclassOf<UTDMUserWidget> OverlayWidgetClass;
 };

@@ -45,6 +45,9 @@ public:
 	FGameplayTag Montage_Attack_3;
 	FGameplayTag Montage_Attack_4;
 
+    FGameplayTag Attributes_Secondary_MaxHealth;
+	FGameplayTag Attributes_Secondary_MaxMana;
+
 private:
 
     static FTDMGameplayTags GameplayTags;

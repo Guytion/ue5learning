@@ -14,4 +14,5 @@ class THREEDMOBA_API UTDMAbilitySystemGlobals : public UAbilitySystemGlobals
 {
 	GENERATED_BODY()
 	
+	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
 };
