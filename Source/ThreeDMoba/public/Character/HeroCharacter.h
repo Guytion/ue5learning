@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "ThreeDMoba/Weapon.h"
 #include "Interaction/PlayerInterface.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
+#include "Components/WidgetComponent.h"
 #include "HeroCharacter.generated.h"
 
 class UCameraComponent;
@@ -46,6 +48,18 @@ public:
 	virtual void SetLockRotation_Implementation(bool bIsLocked) override;
 	/* Player Interface 结束 */
 
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnMaxHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnManaChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnMaxManaChanged;
+
 protected:
 
 	/** Camera boom positioning the camera behind the character */
@@ -56,9 +70,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (DisplayName = "跟随摄像机"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
+	virtual void BeginPlay() override;
+
 	void AddCharacterAbilities(); // 添加角色能力
 
 	virtual void InitAbilityActorInfo() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (DisplayName = "血条蓝条显示"))
+	TObjectPtr<UWidgetComponent> HeroStatusBar;
 
 private:
 

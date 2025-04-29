@@ -8,6 +8,7 @@
 #include "Player/TDMPlayerController.h"
 #include "UI/HUD/PlayerHUD.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "UI/Widget/TDMUserWidget.h"
 
 AHeroCharacter::AHeroCharacter()
 {
@@ -23,6 +24,11 @@ AHeroCharacter::AHeroCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	NetPriority = 5.0f; // 提升同步优先级（默认4.0）
+
+	HeroStatusBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HeroStatusBar"));
+	HeroStatusBar->SetupAttachment(RootComponent);
+	HeroStatusBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+
 }
 
 void AHeroCharacter::PossessedBy(AController* NewController)
@@ -44,6 +50,50 @@ void AHeroCharacter::OnRep_PlayerState()
     InitAbilityActorInfo();
 }
 
+void AHeroCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (UTDMUserWidget* TDMUserWidget = Cast<UTDMUserWidget>(HeroStatusBar->GetUserWidgetObject()))
+	{
+		TDMUserWidget->SetWidgetController(this); // 触发WidgetControllerSet事件
+	}
+	
+	if (const UTDMAttributeSet* TDMAS = Cast<UTDMAttributeSet>(AttributeSet))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetMaxHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetManaAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnManaChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetMaxManaAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxManaChanged.Broadcast(Data.NewValue);
+			}
+		);
+
+		OnHealthChanged.Broadcast(TDMAS->GetHealth());
+		OnMaxHealthChanged.Broadcast(TDMAS->GetMaxHealth());
+		OnManaChanged.Broadcast(TDMAS->GetMana());
+		OnMaxManaChanged.Broadcast(TDMAS->GetMaxMana());
+
+	}
+	
+}
 AWeapon* AHeroCharacter::GetAttachedWeapon() const
 {
 	/* TArray<AActor*> AttachedActors;

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "UI/WidgetController/WidgetController.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "PlayerHUD.generated.h"
 
 class UAbilitySystemComponent;
@@ -22,6 +24,8 @@ public:
 
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
+	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
+
 private:
 
 	UPROPERTY()
@@ -29,4 +33,10 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (DisplayName = "覆层控件类"))
 	TSubclassOf<UTDMUserWidget> OverlayWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
+
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "覆层控件控制器类"))
+	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
 };
