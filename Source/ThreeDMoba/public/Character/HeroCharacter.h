@@ -6,7 +6,6 @@
 #include "Character/ThreeDMobaCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "ThreeDMoba/Weapon.h"
 #include "Interaction/PlayerInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "Components/WidgetComponent.h"
@@ -35,8 +34,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-	AWeapon* GetAttachedWeapon() const;
 
 	virtual void PossessedBy(AController* NewController) override;
 

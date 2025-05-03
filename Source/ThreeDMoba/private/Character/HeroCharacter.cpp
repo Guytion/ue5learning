@@ -60,19 +60,6 @@ void AHeroCharacter::BeginPlay()
 	HeroStatusBar->SetVisibility(!IsLocallyControlled());
 	
 }
-AWeapon* AHeroCharacter::GetAttachedWeapon() const
-{
-	/* TArray<AActor*> AttachedActors;
-	GetAttachedActors(AttachedActors); // 获取所有附加的Actor
-	for (AActor* Actor : AttachedActors)
-	{
-		if (AWeapon* Weapon = Cast<AWeapon>(Actor))
-		{
-			return Weapon;
-		}
-	} */
-	return nullptr;
-}
 void AHeroCharacter::AddCharacterAbilities()
 {
 	UTDMAbilitySystemComponent* HeroASC = CastChecked<UTDMAbilitySystemComponent>(GetAbilitySystemComponent());

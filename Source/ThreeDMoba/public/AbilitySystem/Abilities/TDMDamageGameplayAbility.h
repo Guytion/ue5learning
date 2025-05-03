@@ -32,7 +32,7 @@ public:
 	) const;
 
 	UFUNCTION(BlueprintPure, Category="伤害", meta = (DisplayName = "根据等级计算伤害"))
-	float GetDamageAtLevel() const;
+	virtual float GetDamageAtLevel() const;
 
 protected:
 

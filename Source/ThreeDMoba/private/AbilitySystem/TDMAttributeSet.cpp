@@ -128,7 +128,6 @@ void UTDMAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
     {
         bFatal = GetHealth() <= 0.f;
         SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-        // UE_LOG(LogTemp, Warning, TEXT("改变%s的生命值%f"), *Props.TargetAvatarActor->GetName(), GetHealth());
     }
     if (Data.EvaluatedData.Attribute == GetManaAttribute())
     {
@@ -138,6 +137,11 @@ void UTDMAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
     {
         bFatal = HandleIncomingDamage(Props) || bFatal;
     }
+    if (bFatal)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Dead")));
+    }
+    
 }
 
 void UTDMAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)

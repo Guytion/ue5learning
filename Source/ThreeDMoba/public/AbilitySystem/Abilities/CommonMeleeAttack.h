@@ -14,6 +14,10 @@ class THREEDMOBA_API UCommonMeleeAttack : public UTDMDamageGameplayAbility
 {
 	GENERATED_BODY()
 	
+public:
+
+	virtual float GetDamageAtLevel() const override;
+	
 protected:
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置武器伤害"))
