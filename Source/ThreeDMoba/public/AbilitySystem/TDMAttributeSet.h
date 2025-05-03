@@ -62,6 +62,11 @@ public:
 	FGameplayAttributeData MaxQi;
 	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, MaxQi);
 
+	/* 元属性 */
+	UPROPERTY(BlueprintReadOnly, Category = "元属性")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, IncomingDamage);
+
 	/* 回调函数 */
 
 	UFUNCTION()
@@ -85,6 +90,7 @@ public:
 private:
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
+	bool HandleIncomingDamage(const FEffectProperties& Props);
 };
 
 USTRUCT()

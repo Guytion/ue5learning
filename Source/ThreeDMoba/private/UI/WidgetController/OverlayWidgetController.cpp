@@ -2,8 +2,6 @@
 
 
 #include "UI/WidgetController/OverlayWidgetController.h"
-#include "AbilitySystem/TDMAttributeSet.h"
-#include "Player/TDMPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {

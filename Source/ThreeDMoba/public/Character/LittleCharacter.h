@@ -22,14 +22,10 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override; // 初始化默认属性
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	virtual int32 GetTeamId_Implementation() const override { return TeamId; }
 
 	/** 攻击敌人 **/
 	UFUNCTION(BlueprintCallable)
@@ -38,9 +34,5 @@ public:
 	class AWeapon* GetAttachedWeapon() const;
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
-private:
-
-	float CurrentAttackTime = 0;
 
 };

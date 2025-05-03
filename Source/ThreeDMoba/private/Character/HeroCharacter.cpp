@@ -7,8 +7,8 @@
 #include "Player/TDMPlayerState.h"
 #include "Player/TDMPlayerController.h"
 #include "UI/HUD/PlayerHUD.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/TDMUserWidget.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AHeroCharacter::AHeroCharacter()
 {
@@ -30,7 +30,6 @@ AHeroCharacter::AHeroCharacter()
 	HeroStatusBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
 
 }
-
 void AHeroCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -40,6 +39,8 @@ void AHeroCharacter::PossessedBy(AController* NewController)
 
 	InitializeDefaultAttributes();
 	AddCharacterAbilities();
+	
+	BroadcastInitialValues();
 }
 
 void AHeroCharacter::OnRep_PlayerState()
@@ -48,50 +49,15 @@ void AHeroCharacter::OnRep_PlayerState()
     
     // 在客户端上初始化玩家状态
     InitAbilityActorInfo();
+
+	BroadcastInitialValues();
 }
 
 void AHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (UTDMUserWidget* TDMUserWidget = Cast<UTDMUserWidget>(HeroStatusBar->GetUserWidgetObject()))
-	{
-		TDMUserWidget->SetWidgetController(this); // 触发WidgetControllerSet事件
-	}
-	
-	if (const UTDMAttributeSet* TDMAS = Cast<UTDMAttributeSet>(AttributeSet))
-	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetHealthAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnHealthChanged.Broadcast(Data.NewValue);
-			}
-		);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetMaxHealthAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnMaxHealthChanged.Broadcast(Data.NewValue);
-			}
-		);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetManaAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnManaChanged.Broadcast(Data.NewValue);
-			}
-		);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TDMAS->GetMaxManaAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnMaxManaChanged.Broadcast(Data.NewValue);
-			}
-		);
-
-		OnHealthChanged.Broadcast(TDMAS->GetHealth());
-		OnMaxHealthChanged.Broadcast(TDMAS->GetMaxHealth());
-		OnManaChanged.Broadcast(TDMAS->GetMana());
-		OnMaxManaChanged.Broadcast(TDMAS->GetMaxMana());
-
-	}
+	HeroStatusBar->SetVisibility(!IsLocallyControlled());
 	
 }
 AWeapon* AHeroCharacter::GetAttachedWeapon() const
@@ -133,6 +99,11 @@ void AHeroCharacter::InitAbilityActorInfo()
 				PlayerHUD->InitOverlay(HeroPC, HeroPS, AbilitySystemComponent, AttributeSet);
 			}
 		}
+		BindCallbacksToDependencies();
+		if (UTDMUserWidget* TDMUserWidget = Cast<UTDMUserWidget>(HeroStatusBar->GetUserWidgetObject()))
+		{
+			TDMUserWidget->SetWidgetController(this); // 触发WidgetControllerSet事件
+		}
 	}
 }
 
@@ -158,3 +129,45 @@ void AHeroCharacter::SetLockRotation_Implementation(bool bIsLocked)
     }
 }
 
+void AHeroCharacter::BindCallbacksToDependencies()
+{
+	if (AbilitySystemComponent && AttributeSet)
+	{
+		const UTDMAttributeSet* HeroAS = CastChecked<UTDMAttributeSet>(AttributeSet);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetMaxHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetManaAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnManaChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetMaxManaAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxManaChanged.Broadcast(Data.NewValue);
+			}
+		);
+	}
+}
+
+void AHeroCharacter::BroadcastInitialValues()
+{
+	if (const UTDMAttributeSet* HeroAS = Cast<UTDMAttributeSet>(AttributeSet))
+	{
+		OnHealthChanged.Broadcast(HeroAS->GetHealth());
+		OnMaxHealthChanged.Broadcast(HeroAS->GetMaxHealth());
+		OnManaChanged.Broadcast(HeroAS->GetMana());
+		OnMaxManaChanged.Broadcast(HeroAS->GetMaxMana());
+	}
+}

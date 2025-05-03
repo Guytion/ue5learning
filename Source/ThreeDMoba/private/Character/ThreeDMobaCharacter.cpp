@@ -13,6 +13,8 @@
 #include "Net/UnrealNetwork.h"
 #include "TDMGameplayTags.h"
 #include "AbilitySystemComponent.h"
+#include "ThreeDMoba/ThreeDMoba.h"
+#include "ActorComponent/WeaponMeshComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AThreeDMobaCharacter
@@ -54,6 +56,7 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), FName("Weapon_R"));
+	Weapon->SetCollisionObjectType(ECC_Weapon);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	// Weapon->SetIsReplicated(true);
 	
@@ -254,4 +257,22 @@ FVector AThreeDMobaCharacter::GetCombatSocketLocation_Implementation(const FGame
 		return GetMesh()->GetSocketLocation(LeftHandSocketName);
 	}
 	return FVector();
+}
+
+void AThreeDMobaCharacter::SetIsAttacking_Implementation(bool IsAttacking)
+{
+	if (IsValid(Weapon))
+	{
+		IsAttacking ? Weapon->SetCollisionEnabled(ECollisionEnabled::QueryOnly) : Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	
+}
+
+UWeaponMeshComponent* AThreeDMobaCharacter::GetWeapon_Implementation()
+{
+	if (UWeaponMeshComponent* WeaponMesh = Cast<UWeaponMeshComponent>(Weapon))
+	{
+		return WeaponMesh;
+	}
+	return nullptr;
 }

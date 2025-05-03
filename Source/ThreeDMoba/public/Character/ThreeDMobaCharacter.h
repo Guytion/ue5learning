@@ -30,7 +30,11 @@ public:
 	void ServerJump();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/* TeamId Interface */
 	virtual int32 GetTeamId_Implementation() const override { return TeamId; }
+	virtual void SetTeamId_Implementation(int32 NewTeamId) override { TeamId = NewTeamId; }
+	/* TeamId Interface 结束 */
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
@@ -44,13 +48,15 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() const override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
+	virtual void SetIsAttacking_Implementation(bool IsAttacking) override;
+	virtual UWeaponMeshComponent* GetWeapon_Implementation() override;
 	/* Combat Interface 结束 */
 
 	FOnASCRegistered OnASCRegisteredDelegate; // 角色技能系统组件注册事件
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "角色|队伍")
 	int32 TeamId = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")

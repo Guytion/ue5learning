@@ -2,6 +2,12 @@
 
 
 #include "AbilitySystem/TDMAbilitySystemLibrary.h"
+#include "Interaction/TeamIdInterface.h"
+#include "GameplayEffectTypes.h"
+#include "TDMGameplayTags.h"
+#include "TDMAbilityTypes.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 void UTDMAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
@@ -28,4 +34,30 @@ void UTDMAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldC
 void UTDMAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
 
+}
+
+bool UTDMAbilitySystemLibrary::IsFriendly(AActor* ActorA, AActor* ActorB)
+{
+    if (ActorA->Implements<UTeamIdInterface>() && ActorB->Implements<UTeamIdInterface>())
+    {
+        return ITeamIdInterface::Execute_GetTeamId(ActorA) == ITeamIdInterface::Execute_GetTeamId(ActorB);
+    }
+    return false;
+}
+
+FGameplayEffectContextHandle UTDMAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& DamageEffectParams)
+{
+    const FTDMGameplayTags& GameplayTags = FTDMGameplayTags::Get();
+    const AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+
+    FGameplayEffectContextHandle EffectContexthandle = DamageEffectParams.SourceAbilitySystemComponent->MakeEffectContext();
+    EffectContexthandle.AddSourceObject(SourceAvatarActor);
+
+    const FGameplayEffectSpecHandle DamageSpecHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeOutgoingSpec(
+        DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, EffectContexthandle);
+
+    UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, DamageEffectParams.DamageType, DamageEffectParams.BaseDamage); // BaseDamage随等级变化
+    
+    DamageEffectParams.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageSpecHandle.Data);
+    return EffectContexthandle;
 }

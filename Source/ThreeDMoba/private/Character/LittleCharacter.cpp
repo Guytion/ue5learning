@@ -29,24 +29,6 @@ void ALittleCharacter::BeginPlay()
 	InitAbilityActorInfo();
 }
 
-// Called every frame
-void ALittleCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	/* if (bIsAttacking && CurrentAttackTime > 0)
-	{
-		CurrentAttackTime -= DeltaTime;
-		if (CurrentAttackTime <= 0)
-		{
-			bIsAttacking = false;
-			CurrentAttackTime = 0;
-			AWeapon* Weapon = GetAttachedWeapon();
-			Weapon->bIsAttacking = bIsAttacking;
-		}
-	} */
-}
-
 // Called to bind functionality to input
 void ALittleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

@@ -60,6 +60,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxManaChanged;
 
+	void BroadcastInitialValues();
+	void BindCallbacksToDependencies();
+
 protected:
 
 	/** Camera boom positioning the camera behind the character */

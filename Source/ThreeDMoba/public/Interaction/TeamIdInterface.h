@@ -23,7 +23,10 @@ class THREEDMOBA_API ITeamIdInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "队伍")
+	UFUNCTION(BlueprintNativeEvent, Category = "队伍", meta = (DisplayName = "获取队伍ID"))
 	int32 GetTeamId() const;
-	virtual int32 GetTeamId_Implementation() const = 0;
+
+	UFUNCTION(BlueprintNativeEvent, Category = "队伍", meta = (DisplayName = "设置队伍ID"))
+	void SetTeamId(int32 NewTeamId);
+
 };

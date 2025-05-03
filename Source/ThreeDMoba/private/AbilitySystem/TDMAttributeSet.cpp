@@ -134,6 +134,10 @@ void UTDMAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
     {
         SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
     }
+    if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+    {
+        bFatal = HandleIncomingDamage(Props) || bFatal;
+    }
 }
 
 void UTDMAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
@@ -152,4 +156,20 @@ void UTDMAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, 
     {
         //TODO: 如果气大于最大值，则层数+1，气减最大值
     }
+}
+
+bool UTDMAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
+{
+    const float LocalIncomingDamage = GetIncomingDamage();
+    SetIncomingDamage(0.f);
+    if (LocalIncomingDamage > 0.f)
+    {
+        const float NewHealth = GetHealth() - LocalIncomingDamage;
+        // UE_LOG(LogTemp, Warning, TEXT("生命值：%f, 最大生命值：%f，受到%f伤害"), GetHealth(), GetMaxHealth(), LocalIncomingDamage);
+        SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+
+        const bool bFatal = NewHealth <= 0.f;
+        return bFatal;
+    }
+    return false;
 }

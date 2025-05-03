@@ -69,4 +69,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "获取战斗插槽位置"))
 	FVector GetCombatSocketLocation(const FGameplayTag& SocketTag);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetIsAttacking(bool IsAttacking);
+
+	UFUNCTION(BlueprintNativeEvent)
+	UWeaponMeshComponent* GetWeapon();
 };
