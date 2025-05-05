@@ -33,7 +33,7 @@ void UTDMAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldC
 
 void UTDMAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
-
+    
 }
 
 bool UTDMAbilitySystemLibrary::IsFriendly(AActor* ActorA, AActor* ActorB)

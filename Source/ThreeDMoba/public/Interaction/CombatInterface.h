@@ -74,4 +74,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	UWeaponMeshComponent* GetWeapon();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "获取击打反应动画蒙太奇"))
+	UAnimMontage* GetHitReactMontage(); // 获取击打反应动画 montage
 };

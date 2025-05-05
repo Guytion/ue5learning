@@ -5,6 +5,9 @@
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "TDMGameplayTags.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "GameFramework/Character.h"
+#include "Interaction/CombatInterface.h"
 
 UTDMAttributeSet::UTDMAttributeSet()
 {
@@ -72,7 +75,8 @@ void UTDMAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, f
 
 void UTDMAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
-    /* // Source是效果的施加者，Target是效果的目标。如果Source和Target是同一个Actor，那么这个效果就是自增的效果。（此属性集的拥有者）
+    // 将Source和Target的控制器、角色、技能系统信息设置到Props中。
+    // Source是效果的施加者，Target是效果的目标。如果Source和Target是同一个Actor，那么这个效果就是自增的效果。（此属性集的拥有者）
 
     Props.EffectContextHandle = Data.EffectSpec.GetContext();
     Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
@@ -104,7 +108,7 @@ void UTDMAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData&
         Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
         Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
         Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
-    } */
+    }
 }
 
 void UTDMAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -112,7 +116,7 @@ void UTDMAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
     Super::PostGameplayEffectExecute(Data);
 
     FEffectProperties Props;
-    // SetEffectProperties(Data, Props);
+    SetEffectProperties(Data, Props);
 
     /* if (Props.TargetCharacter->Implements<UCombatInterface>())
     {
@@ -173,6 +177,15 @@ bool UTDMAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
         SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
         const bool bFatal = NewHealth <= 0.f;
+        if (!bFatal)
+        {
+            if (Props.TargetCharacter->Implements<UCombatInterface>())
+            {
+                FGameplayTagContainer TagContainer;
+                TagContainer.AddTag(FTDMGameplayTags::Get().Effects_HitReact);
+                Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+            }
+        }
         return bFatal;
     }
     return false;

@@ -35,8 +35,8 @@ void UTDMAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<
             AbilitySpec.DynamicAbilityTags.AddTag(TDMAbility->DefaultKeyMouseInputTag);
             AbilitySpec.DynamicAbilityTags.AddTag(TDMAbility->DefaultJoystickInputTag);
             AbilitySpec.DynamicAbilityTags.AddTag(FTDMGameplayTags::Get().Abilities_Status_Unlocked);
-            GiveAbility(AbilitySpec);
         }
+        GiveAbility(AbilitySpec);
         // if(AbilitySpec.Ability != nullptr) GiveAbility(AbilitySpec);
     }
     bStartupAbilitiesGiven = true; // 授予能力后将标志设为真

@@ -81,7 +81,7 @@ protected:
 
 private:
 
-	UPROPERTY(EditAnywhere, Category = "英雄|技能", meta = (DisplayName = "起始主动技能组"))
+	UPROPERTY(EditAnywhere, Category = "英雄|技能", meta = (DisplayName = "起始技能组"))
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
 	UPROPERTY(EditAnywhere, Category = "英雄|技能", meta = (DisplayName = "起始被动技能组"))

@@ -6,6 +6,8 @@
 #include "ThreeDMobaCharacter.h"
 #include "LittleCharacter.generated.h"
 
+class UGameplayAbility;
+
 UCLASS()
 class THREEDMOBA_API ALittleCharacter : public AThreeDMobaCharacter
 {
@@ -22,6 +24,8 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override; // 初始化默认属性
 
+	void GiveStartupAbilities();
+
 public:
 
 	// Called to bind functionality to input
@@ -35,4 +39,8 @@ public:
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+private:
+
+	UPROPERTY(EditAnywhere, Category = "小兵|技能", meta = (DisplayName = "起始技能组"))
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

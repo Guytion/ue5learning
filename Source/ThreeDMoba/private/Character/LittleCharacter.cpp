@@ -26,6 +26,11 @@ void ALittleCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	InitAbilityActorInfo();
+	if (HasAuthority())
+	{
+		GiveStartupAbilities();
+	}
+	
 }
 
 // Called to bind functionality to input
@@ -91,4 +96,16 @@ void ALittleCharacter::InitializeDefaultAttributes() const
 {
 	Super::InitializeDefaultAttributes();
 	// UTDMAbilitySystemLibrary::InitializeDefaultAttributes(this, AbilitySystemComponent);
+}
+
+void ALittleCharacter::GiveStartupAbilities()
+{
+	if (AbilitySystemComponent)
+	{
+		for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
+		{
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+			AbilitySystemComponent->GiveAbility(AbilitySpec);
+		}
+	}
 }

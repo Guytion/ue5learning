@@ -168,6 +168,7 @@ void ATDMPlayerController::UnHighlightActor(AActor* InActor)
 void ATDMPlayerController::FindPotentialTargets()
 {
 	LockCheckedEnemies.Empty(); // 清空锁定敌人列表
+    LockCheckedEnemies.Shrink(); // 减少内存碎片
 
 	// 获取玩家位置
     APawn* ControlledPawn = GetPawn<APawn>();
@@ -267,6 +268,7 @@ void ATDMPlayerController::UpdateRotation(float DeltaTime)
         else
         {
             LockCheckedEnemies.Empty();
+            LockCheckedEnemies.Shrink(); // 减少内存碎片
             CancelLock();
         }
         

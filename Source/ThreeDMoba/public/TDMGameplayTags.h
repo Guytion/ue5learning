@@ -48,6 +48,11 @@ public:
     FGameplayTag Attributes_Secondary_MaxHealth;
 	FGameplayTag Attributes_Secondary_MaxMana;
 
+    FGameplayTag Effects_HitReact;
+
+    FGameplayTag Abilities_None;
+	FGameplayTag Abilities_Attack;
+
 private:
 
     static FTDMGameplayTags GameplayTags;

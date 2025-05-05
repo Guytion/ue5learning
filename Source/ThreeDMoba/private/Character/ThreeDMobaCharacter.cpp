@@ -57,7 +57,6 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 	Weapon->SetupAttachment(GetMesh(), FName("Weapon_R"));
 	Weapon->SetCollisionObjectType(ECC_Weapon);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	// Weapon->SetIsReplicated(true);
 	
 	PrimaryActorTick.bCanEverTick = false; 
 }
@@ -274,4 +273,9 @@ UWeaponMeshComponent* AThreeDMobaCharacter::GetWeapon_Implementation()
 		return WeaponMesh;
 	}
 	return nullptr;
+}
+
+UAnimMontage* AThreeDMobaCharacter::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
 }

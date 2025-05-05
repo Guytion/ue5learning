@@ -42,4 +42,14 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Montage_Attack_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.3"), FString(TEXT("攻击3")));
     GameplayTags.Montage_Attack_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.4"), FString(TEXT("攻击4")));
     /* 蒙太奇结束 */
+
+    /* 游戏效果 */
+    GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"), FString(TEXT("击退反应")));
+    /* 游戏效果结束 */
+
+    /* 技能 */
+    GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.None"), FString(TEXT("空技能")));
+    GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString(TEXT("普通攻击")));
+    /* 技能结束 */
+
 }

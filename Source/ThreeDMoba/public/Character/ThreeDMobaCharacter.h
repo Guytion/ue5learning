@@ -50,6 +50,7 @@ public:
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	virtual void SetIsAttacking_Implementation(bool IsAttacking) override;
 	virtual UWeaponMeshComponent* GetWeapon_Implementation() override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	/* Combat Interface 结束 */
 
 	FOnASCRegistered OnASCRegisteredDelegate; // 角色技能系统组件注册事件
@@ -104,8 +105,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "角色|战斗", meta = (DisplayName = "右手战斗插槽"))
 	FName RightHandSocketName;
 
+	UPROPERTY(EditAnywhere, Category = "角色|战斗", meta = (DisplayName = "受击反应动画蒙太奇"))
+	TObjectPtr<UAnimMontage> HitReactMontage;
+
 	// 网络同步
 
+	/**
+	 * @brief 设置角色朝向目标（网络同步）
+	 * @param Rotation 目标旋转角度
+	 */
 	UFUNCTION(Server, Reliable)
 	void ServerRotateToTarget(const FRotator& Rotation);
 
