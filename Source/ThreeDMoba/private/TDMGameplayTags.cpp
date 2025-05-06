@@ -52,4 +52,8 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString(TEXT("普通攻击")));
     /* 技能结束 */
 
+    /* GameplayCues */
+    GameplayTags.GameplayCue_MeleeImpact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GameplayCue.MeleeImpact"), FString(TEXT("近战冲击")));
+    /* GameplayCues 结束 */
+
 }

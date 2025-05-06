@@ -172,13 +172,14 @@ bool UTDMAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
     SetIncomingDamage(0.f);
     if (LocalIncomingDamage > 0.f)
     {
-        const float NewHealth = GetHealth() - LocalIncomingDamage;
+        const float NewHealth = GetHealth() - LocalIncomingDamage; // 伤害结算
         // UE_LOG(LogTemp, Warning, TEXT("生命值：%f, 最大生命值：%f，受到%f伤害"), GetHealth(), GetMaxHealth(), LocalIncomingDamage);
         SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
         const bool bFatal = NewHealth <= 0.f;
         if (!bFatal)
         {
+            // 受击反馈
             if (Props.TargetCharacter->Implements<UCombatInterface>())
             {
                 FGameplayTagContainer TagContainer;

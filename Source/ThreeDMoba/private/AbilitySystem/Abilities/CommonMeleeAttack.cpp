@@ -14,8 +14,8 @@ void UCommonMeleeAttack::SetWeaponDamage()
         if (Weapon)
         {
             Weapon->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+            Weapon->WeaponHitResult = FHitResult(); // 清除击中结果
         }
-        
     }
 }
 

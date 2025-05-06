@@ -51,6 +51,7 @@ public:
 	virtual void SetIsAttacking_Implementation(bool IsAttacking) override;
 	virtual UWeaponMeshComponent* GetWeapon_Implementation() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	/* Combat Interface 结束 */
 
 	FOnASCRegistered OnASCRegisteredDelegate; // 角色技能系统组件注册事件

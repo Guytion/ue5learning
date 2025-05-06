@@ -53,6 +53,8 @@ public:
     FGameplayTag Abilities_None;
 	FGameplayTag Abilities_Attack;
 
+    FGameplayTag GameplayCue_MeleeImpact;
+
 private:
 
     static FTDMGameplayTags GameplayTags;

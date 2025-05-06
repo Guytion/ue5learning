@@ -5,11 +5,13 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/TDMAbilitySystemLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UWeaponMeshComponent::BeginPlay()
 {
     Super::BeginPlay();
     OnComponentBeginOverlap.AddDynamic(this, &UWeaponMeshComponent::OnOverlap);
+    // OnComponentEndOverlap.AddDynamic(this, &UWeaponMeshComponent::OnEndOverlap);
 }
 
 void UWeaponMeshComponent::OnOverlap_Implementation(
@@ -22,6 +24,7 @@ void UWeaponMeshComponent::OnOverlap_Implementation(
 ) {
     if (IsValidOverlap(OtherActor))
     {
+        WeaponHitResult = SweepResult;
         if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
         {
             DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
@@ -38,3 +41,14 @@ bool UWeaponMeshComponent::IsValidOverlap(AActor* OtherActor)
     // if (UTDMAbilitySystemLibrary::IsFriendly(SourceAvatarActor, OtherActor)) return false;
     return true;
 }
+
+/* void UWeaponMeshComponent::OnEndOverlap_Implementation(
+    UPrimitiveComponent* OverlappedComponent,
+    AActor* OtherActor,
+    UPrimitiveComponent* OtherComp,
+    int32 OtherBodyIndex
+) {
+    // 延迟0.1秒再清空
+    UKismetSystemLibrary::Delay(this, 0.5f, FLatentActionInfo());
+    WeaponHitResult = FHitResult(); // 清除击中结果
+} */

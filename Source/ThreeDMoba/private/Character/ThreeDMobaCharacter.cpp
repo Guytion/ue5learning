@@ -279,3 +279,15 @@ UAnimMontage* AThreeDMobaCharacter::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
 }
+
+FTaggedMontage AThreeDMobaCharacter::GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag)
+{
+	for (FTaggedMontage TaggedMontage : AttackMontages)
+	{
+		if (TaggedMontage.MontageTag == MontageTag)
+		{
+			return TaggedMontage;
+		}
+	}
+	return FTaggedMontage();
+}

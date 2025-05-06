@@ -19,6 +19,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (DisplayName = "损伤效果参数"))
 	FDamageEffectParams DamageEffectParams;
+
+	UPROPERTY(BlueprintReadOnly)
+	FHitResult WeaponHitResult;
 	
 protected:
 
@@ -33,6 +36,14 @@ protected:
 		bool bFromSweep,
 		const FHitResult& SweepResult
 	);
+
+	/* UFUNCTION(Server, Reliable)
+	void OnEndOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex
+	); */
 
 	bool IsValidOverlap(AActor* OtherActor);
 };
