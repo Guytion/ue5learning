@@ -13,8 +13,26 @@ UTDMAttributeSet::UTDMAttributeSet()
 {
     const FTDMGameplayTags& GameplayTags = FTDMGameplayTags::Get();
 
+    TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Primary_Agility, GetAgilityAttribute);
     TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
     TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_QiAccumulation, GetQiAccumulationAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MeleeAttackPower, GetMeleeAttackPowerAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_RangedAttackPower, GetRangedAttackPowerAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MagicAttackPower, GetMagicAttackPowerAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MissChance, GetMissChanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_CriticalHitChance, GetCriticalHitChanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_HealthRegeneration, GetHealthRegenerationAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Secondary_ManaRegeneration, GetManaRegenerationAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Physical, GetPhysicalResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_BasicMagic, GetBasicMagicResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Fire, GetFireResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Lightning, GetLightningResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Water, GetWaterResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Earth, GetEarthResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Arcane, GetArcaneResistanceAttribute);
 }
 
 void UTDMAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -27,6 +45,25 @@ void UTDMAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
     DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, Qi, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, MaxQi, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, QiLayers, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, Strength, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, Agility, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, QiAccumulation, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, MeleeAttackPower, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, RangedAttackPower, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, MagicAttackPower, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, PhysicalResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, MissChance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, BasicMagicResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, FireResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, LightningResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, WaterResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, EarthResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, ArcaneResistance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, CriticalHitChance, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, HealthRegeneration, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UTDMAttributeSet, ManaRegeneration, COND_None, REPNOTIFY_Always);
 }
 
 void UTDMAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
@@ -57,6 +94,101 @@ void UTDMAttributeSet::OnRep_Qi(const FGameplayAttributeData& OldQi) const
 void UTDMAttributeSet::OnRep_MaxQi(const FGameplayAttributeData& OldMaxQi) const
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, MaxQi, OldMaxQi);
+}
+
+void UTDMAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, Strength, OldStrength);
+}
+
+void UTDMAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, Intelligence, OldIntelligence);
+}
+
+void UTDMAttributeSet::OnRep_Agility(const FGameplayAttributeData& OldAgility) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, Agility, OldAgility);
+}
+
+void UTDMAttributeSet::OnRep_QiAccumulation(const FGameplayAttributeData& OldQiAccumulation) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, QiAccumulation, OldQiAccumulation);
+}
+
+void UTDMAttributeSet::OnRep_MeleeAttackPower(const FGameplayAttributeData& OldMeleeAttackPower) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, MeleeAttackPower, OldMeleeAttackPower);
+}
+
+void UTDMAttributeSet::OnRep_RangedAttackPower(const FGameplayAttributeData& OldRangedAttackPower) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, RangedAttackPower, OldRangedAttackPower);
+}
+
+void UTDMAttributeSet::OnRep_MagicAttackPower(const FGameplayAttributeData& OldMagicAttackPower) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, MagicAttackPower, OldMagicAttackPower);
+}
+
+void UTDMAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, PhysicalResistance, OldPhysicalResistance);
+}
+
+void UTDMAttributeSet::OnRep_MissChance(const FGameplayAttributeData& OldMissChance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, MissChance, OldMissChance);
+}
+
+void UTDMAttributeSet::OnRep_BasicMagicResistance(const FGameplayAttributeData& OldBasicMagicResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, BasicMagicResistance, OldBasicMagicResistance);
+}
+
+void UTDMAttributeSet::OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, FireResistance, OldFireResistance);
+}
+
+void UTDMAttributeSet::OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, LightningResistance, OldLightningResistance);
+}
+
+void UTDMAttributeSet::OnRep_WaterResistance(const FGameplayAttributeData& OldWaterResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, WaterResistance, OldWaterResistance);
+}
+
+void UTDMAttributeSet::OnRep_EarthResistance(const FGameplayAttributeData& OldEarthResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, EarthResistance, OldEarthResistance);
+}
+
+void UTDMAttributeSet::OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, ArcaneResistance, OldArcaneResistance);
+}
+
+void UTDMAttributeSet::OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, CriticalHitChance, OldCriticalHitChance);
+}
+
+void UTDMAttributeSet::OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, HealthRegeneration, OldHealthRegeneration);
+}
+
+void UTDMAttributeSet::OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, ManaRegeneration, OldManaRegeneration);
+}
+
+void UTDMAttributeSet::OnRep_QiLayers(const FGameplayAttributeData& OldQiLayers) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UTDMAttributeSet, QiLayers, OldQiLayers);
 }
 
 void UTDMAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

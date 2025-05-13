@@ -8,8 +8,20 @@ FTDMGameplayTags FTDMGameplayTags::GameplayTags; // 定义静态变量并初始�
 
 void FTDMGameplayTags::InitializeNativeGameplayTags()
 {
-    GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString(TEXT("玩家死亡前所能承受的最大伤害")));
-    GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxMana"), FString(TEXT("玩家释放技能的最大消耗")));
+    GameplayTags.Attributes_Primary_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Strength"), FString(TEXT("力量")));
+    GameplayTags.Attributes_Primary_Intelligence = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Intelligence"), FString(TEXT("智力"))); // 添加标签并返回引用
+    GameplayTags.Attributes_Primary_Agility = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Agility"), FString(TEXT("敏捷"))); // 添加标签并返回引用
+
+    GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString(TEXT("最大生命值")));
+    GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxMana"), FString(TEXT("最大魔法值")));
+    GameplayTags.Attributes_Secondary_QiAccumulation = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.QiAccumulation"), FString(TEXT("气积累速度"))); // 添加标签并返回引用
+    GameplayTags.Attributes_Secondary_MeleeAttackPower = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MeleeAttackPower"), FString(TEXT("近战攻击力")));
+    GameplayTags.Attributes_Secondary_RangedAttackPower = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.RangedAttackPower"), FString(TEXT("远程攻击力"))); // 添加标签并返回引用
+    GameplayTags.Attributes_Secondary_MagicAttackPower = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MagicAttackPower"), FString(TEXT("魔法攻击力"))); // 添加标签并返回引用
+    GameplayTags.Attributes_Secondary_MissChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MissChance"), FString(TEXT("闪避几率"))); // 添加标签并返回引用
+    GameplayTags.Attributes_Secondary_CriticalHitChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.CriticalHitChance"), FString(TEXT("暴击几率"))); // 添加标签并返回引用
+    GameplayTags.Attributes_Secondary_HealthRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HealthRegeneration"), FString(TEXT("生命恢复"))); // 添加标签并返回引用
+    GameplayTags.Attributes_Secondary_ManaRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.ManaRegeneration"), FString(TEXT("法力恢复"))); // 添加标签并返回引用
 
     /* 输入标签 */
     GameplayTags.InputTag_KeyMouse_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.KeyMouse.LMB"), FString(TEXT("鼠标左键")));
@@ -20,7 +32,22 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     /* 伤害类型 */
     GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"), FString(TEXT("伤害")));
     GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Physical"), FString(TEXT("物理伤害")));
-    /* 伤害类型结束*/
+    GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Fire"), FString(TEXT("火焰伤害")));
+    GameplayTags.Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Lightning"), FString(TEXT("闪电伤害")));
+    GameplayTags.Damage_Water = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Water"), FString(TEXT("水系伤害")));
+    GameplayTags.Damage_Earth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Earth"), FString(TEXT("土系伤害")));
+    GameplayTags.Damage_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Arcane"), FString(TEXT("奥术伤害")));
+    /* 伤害类型结束 */
+
+    /* 抗性类型 */
+    GameplayTags.Attributes_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.Physical"), FString(TEXT("物理防御")));
+    GameplayTags.Attributes_Resistance_BasicMagic = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.BasicMagic"), FString(TEXT("基础魔法抗性")));
+    GameplayTags.Attributes_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.Fire"), FString(TEXT("火焰抗性")));
+    GameplayTags.Attributes_Resistance_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.Lightning"), FString(TEXT("闪电抗性")));
+    GameplayTags.Attributes_Resistance_Water = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.Water"), FString(TEXT("水系抗性")));
+    GameplayTags.Attributes_Resistance_Earth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.Earth"), FString(TEXT("土系抗性")));
+    GameplayTags.Attributes_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.Arcane"), FString(TEXT("奥术抗性")));
+    /* 抗性类型结束 */
 
     GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HitReact"), FString(TEXT("击中反应能力")));
 
@@ -56,4 +83,12 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     GameplayTags.GameplayCue_MeleeImpact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GameplayCue.MeleeImpact"), FString(TEXT("近战冲击")));
     /* GameplayCues 结束 */
 
+    /* 伤害与抗性的对应关系 */
+    GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Physical, GameplayTags.Attributes_Resistance_Physical);
+    GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Resistance_Fire);
+    GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Lightning, GameplayTags.Attributes_Resistance_Lightning);
+    GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Water, GameplayTags.Attributes_Resistance_Water);
+    GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Earth, GameplayTags.Attributes_Resistance_Earth);
+    GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Arcane, GameplayTags.Attributes_Resistance_Arcane);
+    /* 伤害与抗性的对应关系结束 */
 }

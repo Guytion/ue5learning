@@ -39,10 +39,18 @@ bool FTDMGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Ma
 		{
 			RepBits |= 1 << 7;
 		}
+		if (bIsCriticalHit)
+		{
+			RepBits |= 1 << 8;
+		}
+		if (bIsMissed)
+		{
+			RepBits |= 1 << 9;
+		}
 		
 	}
 
-    Ar.SerializeBits(&RepBits, 8);
+    Ar.SerializeBits(&RepBits, 10);
 
     if (RepBits & (1 << 0))
 	{
@@ -94,6 +102,14 @@ bool FTDMGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Ma
 			}
 		}
 		DamageType->NetSerialize(Ar, Map, bOutSuccess);
+	}
+	if (RepBits & (1 << 8))
+	{
+		Ar << bIsCriticalHit;
+	}
+	if (RepBits & (1 << 9))
+	{
+		Ar << bIsMissed;
 	}
 
 	if (Ar.IsLoading())

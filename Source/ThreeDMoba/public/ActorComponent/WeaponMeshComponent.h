@@ -37,13 +37,5 @@ protected:
 		const FHitResult& SweepResult
 	);
 
-	/* UFUNCTION(Server, Reliable)
-	void OnEndOverlap(
-		UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex
-	); */
-
 	bool IsValidOverlap(AActor* OtherActor);
 };

@@ -69,13 +69,25 @@ public:
 		return NewContext;
 	}
 
+	bool IsCriticalHit() const { return bIsCriticalHit; }
+	bool IsMissed() const { return bIsMissed; }
+	
 	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
 
 	void AddDamageType(const FGameplayTag& InDamageType);
 
+	void SetIsCriticalHit(bool InIsCriticalHit) { bIsCriticalHit = InIsCriticalHit; }
+	void SetIsMissed(bool InIsMissed) { bIsMissed = InIsMissed; }
+
 protected:
 
 	TSharedPtr<FGameplayTag> DamageType = MakeShared<FGameplayTag>(); // 智能指针已有垃圾回收机制，不能加UPROPERTY宏
+
+	UPROPERTY()
+	bool bIsCriticalHit = false;
+
+	UPROPERTY()
+	bool bIsMissed = false;
 };
 
 template<>

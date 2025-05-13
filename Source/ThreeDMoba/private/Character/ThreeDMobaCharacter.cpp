@@ -55,8 +55,9 @@ AThreeDMobaCharacter::AThreeDMobaCharacter()
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), FName("Weapon_R"));
-	Weapon->SetCollisionObjectType(ECC_Weapon);
-	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// Weapon->SetCollisionObjectType(ECC_Weapon);
+	// Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Weapon->SetCollisionProfileName(TEXT("Weapon"));
 	
 	PrimaryActorTick.bCanEverTick = false; 
 }

@@ -62,6 +62,86 @@ public:
 	FGameplayAttributeData MaxQi;
 	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, MaxQi);
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_QiLayers, Category = "关键属性")
+	FGameplayAttributeData QiLayers;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, QiLayers);
+
+	/* 主要属性 */
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "主要属性")
+	FGameplayAttributeData Strength;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, Strength);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Intelligence, Category = "主要属性")
+	FGameplayAttributeData Intelligence;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, Intelligence);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Agility, Category = "主要属性")
+	FGameplayAttributeData Agility;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, Agility);
+
+	/* 次生属性 */
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_QiAccumulation, Category = "次生属性")
+	FGameplayAttributeData QiAccumulation;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, QiAccumulation);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MeleeAttackPower, Category = "次生属性")
+	FGameplayAttributeData MeleeAttackPower;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, MeleeAttackPower);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_RangedAttackPower, Category = "次生属性")
+	FGameplayAttributeData RangedAttackPower;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, RangedAttackPower);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MagicAttackPower, Category = "次生属性")
+	FGameplayAttributeData MagicAttackPower;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, MagicAttackPower);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalResistance, Category = "次生属性")
+	FGameplayAttributeData PhysicalResistance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, PhysicalResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MissChance, Category = "次生属性")
+	FGameplayAttributeData MissChance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, MissChance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BasicMagicResistance, Category = "次生属性")
+	FGameplayAttributeData BasicMagicResistance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, BasicMagicResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireResistance, Category = "次生属性")
+	FGameplayAttributeData FireResistance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, FireResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_LightningResistance, Category = "次生属性")
+	FGameplayAttributeData LightningResistance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, LightningResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_WaterResistance, Category = "次生属性")
+	FGameplayAttributeData WaterResistance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, WaterResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_EarthResistance, Category = "次生属性")
+	FGameplayAttributeData EarthResistance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, EarthResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArcaneResistance, Category = "次生属性")
+	FGameplayAttributeData ArcaneResistance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, ArcaneResistance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance, Category = "次生属性")
+	FGameplayAttributeData CriticalHitChance;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, CriticalHitChance);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category = "次生属性")
+	FGameplayAttributeData HealthRegeneration;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, HealthRegeneration);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category = "次生属性")
+	FGameplayAttributeData ManaRegeneration;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, ManaRegeneration);
+
 	/* 元属性 */
 	UPROPERTY(BlueprintReadOnly, Category = "元属性")
 	FGameplayAttributeData IncomingDamage;
@@ -86,6 +166,63 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxQi(const FGameplayAttributeData& OldMaxQi) const;
+
+	UFUNCTION()
+	void OnRep_Strength(const FGameplayAttributeData& OldStrength) const;
+
+	UFUNCTION()
+	void OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const;
+
+	UFUNCTION()
+	void OnRep_Agility(const FGameplayAttributeData& OldAgility) const;
+
+	UFUNCTION()
+	void OnRep_QiAccumulation(const FGameplayAttributeData& OldQiAccumulation) const;
+
+	UFUNCTION()
+	void OnRep_MeleeAttackPower(const FGameplayAttributeData& OldMeleeAttackPower) const;
+
+	UFUNCTION()
+	void OnRep_RangedAttackPower(const FGameplayAttributeData& OldRangedAttackPower) const;
+
+	UFUNCTION()
+	void OnRep_MagicAttackPower(const FGameplayAttributeData& OldMagicAttackPower) const;
+
+	UFUNCTION()
+	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;
+
+	UFUNCTION()
+	void OnRep_MissChance(const FGameplayAttributeData& OldMissChance) const;
+
+	UFUNCTION()
+	void OnRep_BasicMagicResistance(const FGameplayAttributeData& OldBasicMagicResistance) const;
+
+	UFUNCTION()
+	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const;
+
+	UFUNCTION()
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance) const;
+
+	UFUNCTION()
+	void OnRep_WaterResistance(const FGameplayAttributeData& OldWaterResistance) const;
+
+	UFUNCTION()
+	void OnRep_EarthResistance(const FGameplayAttributeData& OldEarthResistance) const;
+
+	UFUNCTION()
+	void OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance) const;
+
+	UFUNCTION()
+	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;
+
+	UFUNCTION()
+	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;
+
+	UFUNCTION()
+	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;
+
+	UFUNCTION()
+	void OnRep_QiLayers(const FGameplayAttributeData& OldQiLayers) const;
 
 private:
 
