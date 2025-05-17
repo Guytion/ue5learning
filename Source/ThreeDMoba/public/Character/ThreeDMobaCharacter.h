@@ -39,6 +39,7 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	UAbilitySystemComponent* GetAbilitySystemComponent() const override; // AbilitySystemInterface
+	UAttributeSet* GetAttributeSet() const { return AttributeSet; } // 获取属性集
 
 	/* Combat Interface  */
 	virtual bool CanSeeActor_Implementation(const AActor* TargetActor) const override;

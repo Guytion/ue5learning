@@ -25,7 +25,7 @@ AHeroCharacter::AHeroCharacter()
 
 	NetPriority = 5.0f; // 提升同步优先级（默认4.0）
 
-	HeroStatusBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HeroStatusBar"));
+	HeroStatusBar = CreateDefaultSubobject<UTDMWidgetComponent>(TEXT("HeroStatusBar"));
 	HeroStatusBar->SetupAttachment(RootComponent);
 	HeroStatusBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
 
@@ -40,7 +40,8 @@ void AHeroCharacter::PossessedBy(AController* NewController)
 	InitializeDefaultAttributes();
 	AddCharacterAbilities();
 	
-	BroadcastInitialValues();
+	HeroStatusBar->InitWidget();
+	// BroadcastInitialValues();
 }
 
 void AHeroCharacter::OnRep_PlayerState()
@@ -50,7 +51,8 @@ void AHeroCharacter::OnRep_PlayerState()
     // 在客户端上初始化玩家状态
     InitAbilityActorInfo();
 
-	BroadcastInitialValues();
+	HeroStatusBar->InitWidget();
+	// BroadcastInitialValues();
 }
 
 void AHeroCharacter::BeginPlay()
@@ -86,11 +88,11 @@ void AHeroCharacter::InitAbilityActorInfo()
 				PlayerHUD->InitOverlay(HeroPC, HeroPS, AbilitySystemComponent, AttributeSet);
 			}
 		}
-		BindCallbacksToDependencies();
+		/* BindCallbacksToDependencies();
 		if (UTDMUserWidget* TDMUserWidget = Cast<UTDMUserWidget>(HeroStatusBar->GetUserWidgetObject()))
 		{
 			TDMUserWidget->SetWidgetController(this); // 触发WidgetControllerSet事件
-		}
+		} */
 	}
 }
 
@@ -116,7 +118,7 @@ void AHeroCharacter::SetLockRotation_Implementation(bool bIsLocked)
     }
 }
 
-void AHeroCharacter::BindCallbacksToDependencies()
+/* void AHeroCharacter::BindCallbacksToDependencies()
 {
 	if (AbilitySystemComponent && AttributeSet)
 	{
@@ -157,4 +159,4 @@ void AHeroCharacter::BroadcastInitialValues()
 		OnManaChanged.Broadcast(HeroAS->GetMana());
 		OnMaxManaChanged.Broadcast(HeroAS->GetMaxMana());
 	}
-}
+} */

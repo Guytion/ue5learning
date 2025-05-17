@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UI/WidgetController/WidgetController.h"
-#include "OverlayWidgetController.generated.h"
+#include "OtherHeroWidgetController.generated.h"
 
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable, meta = (DisplayName = "覆层控件控制器"))
-class THREEDMOBA_API UOverlayWidgetController : public UWidgetController
+UCLASS(BlueprintType, Blueprintable)
+class THREEDMOBA_API UOtherHeroWidgetController : public UWidgetController
 {
 	GENERATED_BODY()
 	
@@ -31,10 +31,4 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|属性")
 	FOnAttributeChangedSignature OnMaxManaChanged;
-
-	UPROPERTY(BlueprintAssignable, Category = "GAS|属性")
-	FOnAttributeChangedSignature OnQiChanged;
-
-	UPROPERTY(BlueprintAssignable, Category = "GAS|玩家状态")
-	FOnPlayerStatChangedSignature OnLevelChanged;
 };

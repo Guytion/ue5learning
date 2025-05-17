@@ -8,7 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Interaction/PlayerInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
-#include "Components/WidgetComponent.h"
+#include "ActorComponent/TDMWidgetComponent.h"
 #include "HeroCharacter.generated.h"
 
 class UCameraComponent;
@@ -45,20 +45,20 @@ public:
 	virtual void SetLockRotation_Implementation(bool bIsLocked) override;
 	/* Player Interface 结束 */
 
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnHealthChanged;
+	// UPROPERTY(BlueprintAssignable)
+	// FOnAttributeChangedSignature OnHealthChanged;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnMaxHealthChanged;
+	// UPROPERTY(BlueprintAssignable)
+	// FOnAttributeChangedSignature OnMaxHealthChanged;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnManaChanged;
+	// UPROPERTY(BlueprintAssignable)
+	// FOnAttributeChangedSignature OnManaChanged;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnMaxManaChanged;
+	// UPROPERTY(BlueprintAssignable)
+	// FOnAttributeChangedSignature OnMaxManaChanged;
 
-	void BroadcastInitialValues();
-	void BindCallbacksToDependencies();
+	// void BroadcastInitialValues();
+	// void BindCallbacksToDependencies();
 
 protected:
 
@@ -77,7 +77,7 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (DisplayName = "血条蓝条显示"))
-	TObjectPtr<UWidgetComponent> HeroStatusBar;
+	TObjectPtr<UTDMWidgetComponent> HeroStatusBar;
 
 private:
 
