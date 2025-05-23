@@ -12,6 +12,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
     OnManaChanged.Broadcast(GetHeroAS()->GetMana());
     OnMaxManaChanged.Broadcast(GetHeroAS()->GetMaxMana());
     OnQiChanged.Broadcast(GetHeroAS()->GetQi());
+    OnQiLayersChanged.Broadcast(GetHeroAS()->GetQiLayers());
 
     OnLevelChanged.Broadcast(GetHeroPS()->GetPlayerLevel());
 }
@@ -20,34 +21,40 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	Super::BindCallbacksToDependencies();
 
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetHealthAttribute()).AddLambda(
+    GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetHealthAttribute()).AddLambda(
         [this](const FOnAttributeChangeData& Data)
         {
             OnHealthChanged.Broadcast(Data.NewValue);
         }
     );
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetMaxHealthAttribute()).AddLambda(
+    GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetMaxHealthAttribute()).AddLambda(
         [this](const FOnAttributeChangeData& Data)
         {
             OnMaxHealthChanged.Broadcast(Data.NewValue);
         }
     );
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetManaAttribute()).AddLambda(
+    GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetManaAttribute()).AddLambda(
         [this](const FOnAttributeChangeData& Data)
         {
             OnManaChanged.Broadcast(Data.NewValue);
         }
     );
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetMaxManaAttribute()).AddLambda(
+    GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetMaxManaAttribute()).AddLambda(
         [this](const FOnAttributeChangeData& Data)
         {
             OnMaxManaChanged.Broadcast(Data.NewValue);
         }
     );
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetQiAttribute()).AddLambda(
+    GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetQiAttribute()).AddLambda(
         [this](const FOnAttributeChangeData& Data)
         {
             OnQiChanged.Broadcast(Data.NewValue);
+        }
+    );
+    GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetQiLayersAttribute()).AddLambda(
+        [this](const FOnAttributeChangeData& Data)
+        {
+            OnQiLayersChanged.Broadcast(Data.NewValue);
         }
     );
 

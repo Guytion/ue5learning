@@ -53,6 +53,7 @@ public:
 	virtual UWeaponMeshComponent* GetWeapon_Implementation() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
+	virtual int32 GetCharacterLevel() const override;
 	/* Combat Interface 结束 */
 
 	FOnASCRegistered OnASCRegisteredDelegate; // 角色技能系统组件注册事件
@@ -137,5 +138,8 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void ServerSetCombatTarget(AActor* InCombatTarget);
+
+	UPROPERTY(EditAnywhere, Category = "角色", meta = (DisplayName = "角色等级"))
+	int32 CharacterLevel = 1; // 角色等级
 };
 

@@ -2,12 +2,10 @@
 
 
 #include "Character/HeroCharacter.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "AbilitySystem/TDMAbilitySystemComponent.h"
 #include "Player/TDMPlayerState.h"
 #include "Player/TDMPlayerController.h"
 #include "UI/HUD/PlayerHUD.h"
-#include "UI/Widget/TDMUserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AHeroCharacter::AHeroCharacter()
@@ -88,11 +86,6 @@ void AHeroCharacter::InitAbilityActorInfo()
 				PlayerHUD->InitOverlay(HeroPC, HeroPS, AbilitySystemComponent, AttributeSet);
 			}
 		}
-		/* BindCallbacksToDependencies();
-		if (UTDMUserWidget* TDMUserWidget = Cast<UTDMUserWidget>(HeroStatusBar->GetUserWidgetObject()))
-		{
-			TDMUserWidget->SetWidgetController(this); // 触发WidgetControllerSet事件
-		} */
 	}
 }
 
@@ -118,45 +111,20 @@ void AHeroCharacter::SetLockRotation_Implementation(bool bIsLocked)
     }
 }
 
-/* void AHeroCharacter::BindCallbacksToDependencies()
+int32 AHeroCharacter::GetCharacterLevel() const
 {
-	if (AbilitySystemComponent && AttributeSet)
+	if (const ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
 	{
-		const UTDMAttributeSet* HeroAS = CastChecked<UTDMAttributeSet>(AttributeSet);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetHealthAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnHealthChanged.Broadcast(Data.NewValue);
-			}
-		);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetMaxHealthAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnMaxHealthChanged.Broadcast(Data.NewValue);
-			}
-		);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetManaAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnManaChanged.Broadcast(Data.NewValue);
-			}
-		);
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HeroAS->GetMaxManaAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnMaxManaChanged.Broadcast(Data.NewValue);
-			}
-		);
+		return TDMPlayerState->GetPlayerLevel();
+	}
+	else
+	{
+		return Super::GetCharacterLevel();
 	}
 }
 
-void AHeroCharacter::BroadcastInitialValues()
+void AHeroCharacter::InitializeDefaultAttributes() const
 {
-	if (const UTDMAttributeSet* HeroAS = Cast<UTDMAttributeSet>(AttributeSet))
-	{
-		OnHealthChanged.Broadcast(HeroAS->GetHealth());
-		OnMaxHealthChanged.Broadcast(HeroAS->GetMaxHealth());
-		OnManaChanged.Broadcast(HeroAS->GetMana());
-		OnMaxManaChanged.Broadcast(HeroAS->GetMaxMana());
-	}
-} */
+	Super::InitializeDefaultAttributes();
+	ApplyEffectToSelf(AttributesRegeneration, 1.f);
+}

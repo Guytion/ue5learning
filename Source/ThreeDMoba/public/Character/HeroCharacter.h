@@ -7,11 +7,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Interaction/PlayerInterface.h"
-#include "UI/WidgetController/OverlayWidgetController.h"
 #include "ActorComponent/TDMWidgetComponent.h"
 #include "HeroCharacter.generated.h"
 
-class UCameraComponent;
 class UGameplayAbility;
 
 /**
@@ -45,20 +43,9 @@ public:
 	virtual void SetLockRotation_Implementation(bool bIsLocked) override;
 	/* Player Interface 结束 */
 
-	// UPROPERTY(BlueprintAssignable)
-	// FOnAttributeChangedSignature OnHealthChanged;
-
-	// UPROPERTY(BlueprintAssignable)
-	// FOnAttributeChangedSignature OnMaxHealthChanged;
-
-	// UPROPERTY(BlueprintAssignable)
-	// FOnAttributeChangedSignature OnManaChanged;
-
-	// UPROPERTY(BlueprintAssignable)
-	// FOnAttributeChangedSignature OnMaxManaChanged;
-
-	// void BroadcastInitialValues();
-	// void BindCallbacksToDependencies();
+	/* Combat Interface */
+	virtual int32 GetCharacterLevel() const override;
+	/* Combat Interface 结束 */
 
 protected:
 
@@ -75,9 +62,13 @@ protected:
 	void AddCharacterAbilities(); // 添加角色能力
 
 	virtual void InitAbilityActorInfo() override;
+	virtual void InitializeDefaultAttributes() const override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (DisplayName = "血条蓝条显示"))
 	TObjectPtr<UTDMWidgetComponent> HeroStatusBar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "角色|属性", meta = (DisplayName = "属性回复"))
+	TSubclassOf<UGameplayEffect> AttributesRegeneration;
 
 private:
 

@@ -110,7 +110,7 @@ void AThreeDMobaCharacter::InitAbilityActorInfo()
 
 void AThreeDMobaCharacter::InitializeDefaultAttributes() const
 {
-	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
+	ApplyEffectToSelf(DefaultPrimaryAttributes, GetCharacterLevel());
 	ApplyEffectToSelf(DefaultSecondaryAttributes, 1.f);
 	ApplyEffectToSelf(InitVitalAttributes, 1.f);
 }
@@ -291,4 +291,9 @@ FTaggedMontage AThreeDMobaCharacter::GetTaggedMontageByTag_Implementation(const 
 		}
 	}
 	return FTaggedMontage();
+}
+
+int32 AThreeDMobaCharacter::GetCharacterLevel() const
+{
+	return CharacterLevel;
 }

@@ -60,7 +60,7 @@ protected:
 
 private:
 
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level, meta = (DisplayName = "玩家等级"))
+	UPROPERTY(EditDefaultsOnly, ReplicatedUsing=OnRep_Level, meta = (DisplayName = "玩家等级"))
 	int32 Level = 1; // 玩家等级
 
 	UFUNCTION()

@@ -35,6 +35,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|属性")
 	FOnAttributeChangedSignature OnQiChanged;
 
+	UPROPERTY(BlueprintAssignable, Category = "GAS|属性")
+	FOnAttributeChangedSignature OnQiLayersChanged;
+
 	UPROPERTY(BlueprintAssignable, Category = "GAS|玩家状态")
 	FOnPlayerStatChangedSignature OnLevelChanged;
 };

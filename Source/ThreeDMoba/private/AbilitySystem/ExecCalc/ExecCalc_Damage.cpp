@@ -6,40 +6,25 @@
 #include "AbilitySystemComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "AbilitySystem/TDMAttributeSet.h"
+#include "DamageStatics.h"
 
-struct TDMDamageStatics
+TDMDamageStatics::TDMDamageStatics()
 {
-    DECLARE_ATTRIBUTE_CAPTUREDEF(MeleeAttackPower);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(RangedAttackPower);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(MagicAttackPower);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(MissChance);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, MeleeAttackPower, Source, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, RangedAttackPower, Source, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, MagicAttackPower, Source, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, MissChance, Target, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, CriticalHitChance, Source, false);
 
-    DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(FireResistance);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(LightningResistance);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(WaterResistance);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(EarthResistance);
-    DECLARE_ATTRIBUTE_CAPTUREDEF(ArcaneResistance);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, PhysicalResistance, Target, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, FireResistance, Target, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, LightningResistance, Target, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, WaterResistance, Target, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, EarthResistance, Target, false);
+    DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, ArcaneResistance, Target, false);
+}
 
-    TDMDamageStatics()
-    {
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, MeleeAttackPower, Source, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, RangedAttackPower, Source, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, MagicAttackPower, Source, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, MissChance, Target, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, CriticalHitChance, Source, false);
-
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, PhysicalResistance, Target, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, FireResistance, Target, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, LightningResistance, Target, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, WaterResistance, Target, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, EarthResistance, Target, false);
-        DEFINE_ATTRIBUTE_CAPTUREDEF(UTDMAttributeSet, ArcaneResistance, Target, false);
-    }
-};
-
-static const TDMDamageStatics& DamageStatics()
+const TDMDamageStatics& TDMDamageStatics::Get()
 {
     static TDMDamageStatics DStatics;
     return DStatics;
@@ -111,7 +96,7 @@ void UExecCalc_Damage::Execute_Implementation(
         checkf(TagsToCaptureDefs.Contains(ResistanceTag), TEXT("ExecCalc_Damage的标签捕获字典没有包含标签： %s"), *ResistanceTag.ToString());
         const FGameplayEffectAttributeCaptureDefinition CaptureDef = TagsToCaptureDefs[ResistanceTag];
 
-        float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag, false); // 找不到相应的DamageTypeTag，返回0
+        float DamageTypeValue = GetDamageValue(Spec, DamageTypeTag, ExecutionParams, EvaluateParams);
         if (DamageTypeValue <= 0.f)
         {
             continue;
@@ -129,4 +114,14 @@ void UExecCalc_Damage::Execute_Implementation(
 
     const FGameplayModifierEvaluatedData EvaluatedData(UTDMAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
     OutExecutionOutput.AddOutputModifier(EvaluatedData);
+}
+
+float UExecCalc_Damage::GetDamageValue(
+    const FGameplayEffectSpec& Spec,
+    FGameplayTag Tag,
+    const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+    const FAggregatorEvaluateParameters& EvaluateParams
+) const
+{
+    return Spec.GetSetByCallerMagnitude(Tag, false); // 找不到相应的DamageTypeTag，返回0
 }

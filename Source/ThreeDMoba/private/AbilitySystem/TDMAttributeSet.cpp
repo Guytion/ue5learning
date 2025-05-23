@@ -269,6 +269,14 @@ void UTDMAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
     {
         SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
     }
+    if (Data.EvaluatedData.Attribute == GetQiAttribute())
+    {
+        if (GetQi() >= GetMaxQi() and GetMaxQi() > 0.f)
+        {
+            SetQiLayers(FMath::Clamp(GetQiLayers() + 1, 0, 99));
+            SetQi(GetQi() - GetMaxQi());
+        }
+    }
     if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
     {
         bFatal = HandleIncomingDamage(Props) || bFatal;

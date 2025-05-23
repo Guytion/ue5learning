@@ -22,4 +22,13 @@ public:
 		const FGameplayEffectCustomExecutionParameters& ExecutionParams,
 		FGameplayEffectCustomExecutionOutput& OutExecutionOutput
 	) const override;
+
+protected:
+
+	virtual float GetDamageValue(
+		const FGameplayEffectSpec& Spec,
+		FGameplayTag Tag,
+		const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+		const FAggregatorEvaluateParameters& EvaluateParams
+	) const;
 };

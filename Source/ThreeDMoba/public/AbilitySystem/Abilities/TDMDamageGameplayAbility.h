@@ -42,6 +42,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="伤害", meta = (DisplayName = "伤害类型"))
 	FGameplayTag DamageType;
 
-	UPROPERTY(EditDefaultsOnly, Category="伤害", meta = (DisplayName = "伤害数值"))
+	UPROPERTY(EditDefaultsOnly, Category="伤害", meta = (DisplayName = "伤害系数"))
 	FScalableFloat Damage;
 };
