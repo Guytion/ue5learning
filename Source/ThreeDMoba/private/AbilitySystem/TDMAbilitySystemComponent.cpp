@@ -47,9 +47,9 @@ void UTDMAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSubc
 {
     for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupPassiveAbilities)
     {
-        // FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
-        // AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped); // 激活监听事件技能，使角色可以升级
-        // GiveAbilityAndActivateOnce(AbilitySpec);
+        FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+        AbilitySpec.DynamicAbilityTags.AddTag(FTDMGameplayTags::Get().Abilities_Status_Unlocked); // 激活监听事件技能，使角色可以升级
+        GiveAbilityAndActivateOnce(AbilitySpec);
     }
 }
 
@@ -99,4 +99,23 @@ void UTDMAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
             InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
         }
     }
+}
+
+void UTDMAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
+{
+    /* UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+    for (const FAuraAbilityInfo& Info : AbilityInfo->AbilityInformation)
+    {
+        if (!Info.AbilityTag.IsValid()) continue;
+        if (Level < Info.LevelRequirement) continue;
+        if (GetSpecFromAbilityTag(Info.AbilityTag) == nullptr)
+        {
+            FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
+            FGameplayTag StatusTag = FAuraGameplayTags::Get().Abilities_Status_Eligible;
+            AbilitySpec.DynamicAbilityTags.AddTag(StatusTag);
+            GiveAbility(AbilitySpec);
+            MarkAbilitySpecDirty(AbilitySpec); // 在技能被授予之后标记为脏，以便同步到客户端
+            ClientUpdateAbilityStatus(Info.AbilityTag, StatusTag, 1);
+        }
+    } */
 }

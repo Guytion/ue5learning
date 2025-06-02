@@ -147,6 +147,10 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, IncomingDamage);
 
+	UPROPERTY(BlueprintReadOnly, Category = "元属性")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UTDMAttributeSet, IncomingXP);
+
 	/* 回调函数 */
 
 	UFUNCTION()
@@ -228,6 +232,10 @@ private:
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 	bool HandleIncomingDamage(const FEffectProperties& Props);
+	void SendXPEvent(const FEffectProperties& Props);
+	void HandleIncomingXP(const FEffectProperties& Props);
+	bool bTopOffHealth = false;
+	bool bTopOffMana = false;
 };
 
 USTRUCT()

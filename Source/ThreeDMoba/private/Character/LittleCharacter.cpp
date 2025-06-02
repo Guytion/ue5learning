@@ -109,3 +109,9 @@ void ALittleCharacter::GiveStartupAbilities()
 		}
 	}
 }
+
+void ALittleCharacter::Die(const FVector& DeathImpulse)
+{
+	SetLifeSpan(LifeSpan); // 尸体存在一段时间后消失
+	Super::Die(DeathImpulse);
+}

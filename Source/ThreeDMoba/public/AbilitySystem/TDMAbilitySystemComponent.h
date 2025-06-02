@@ -30,6 +30,8 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
+	void UpdateAbilityStatuses(int32 Level);
+
 protected:
 
 	UFUNCTION(Client, Reliable) // OnGameplayEffectAppliedDelegateToSelf只在服务端调用，因此EffectApplied需要设置客户端RPC。

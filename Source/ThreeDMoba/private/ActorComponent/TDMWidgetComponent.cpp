@@ -4,8 +4,8 @@
 #include "ActorComponent/TDMWidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Character/HeroCharacter.h"
-#include "UI/Widget/TDMUserWidget.h"
 #include "UI/WidgetController/OtherHeroWidgetController.h"
+#include "UI/Widget/TDMUserWidget.h"
 
 void UTDMWidgetComponent::InitWidget()
 {

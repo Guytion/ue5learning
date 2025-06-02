@@ -128,3 +128,63 @@ void AHeroCharacter::InitializeDefaultAttributes() const
 	Super::InitializeDefaultAttributes();
 	ApplyEffectToSelf(AttributesRegeneration, 1.f);
 }
+
+int32 AHeroCharacter::GetXP_Implementation() const
+{
+	if (const ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
+	{
+		return TDMPlayerState->GetXP();
+	}
+	return 0;
+}
+
+void AHeroCharacter::AddToXP_Implementation(int32 InXP)
+{
+	if (ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
+	{
+		return TDMPlayerState->AddToXP(InXP);
+	}
+}
+
+int32 AHeroCharacter::FindLevelForXP_Implementation(int32 XP) const
+{
+	if (const ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
+	{
+		return TDMPlayerState->LevelUpInfo->FindLevelForXP(XP);
+	}
+	return 1;
+}
+
+int32 AHeroCharacter::GetSpellPointsReward_Implementation(int32 Level) const
+{
+	if (const ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
+	{
+		return TDMPlayerState->LevelUpInfo->LevelUpInformation[Level].SpellPointsReward;
+	}
+	return 0;
+}
+
+void AHeroCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
+{
+	if (ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
+	{
+		TDMPlayerState->AddToLevel(InPlayerLevel);
+		if (UTDMAbilitySystemComponent* HeroASC = Cast<UTDMAbilitySystemComponent>(GetAbilitySystemComponent()))
+		{
+			HeroASC->UpdateAbilityStatuses(TDMPlayerState->GetPlayerLevel());
+		}
+	}
+}
+
+void AHeroCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)
+{
+	if (ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
+	{
+		return TDMPlayerState->AddToSpellPoints(InSpellPoints);
+	}
+}
+
+void AHeroCharacter::LevelUp_Implementation()
+{
+	ApplyEffectToSelf(DefaultPrimaryAttributes, GetCharacterLevel());
+}

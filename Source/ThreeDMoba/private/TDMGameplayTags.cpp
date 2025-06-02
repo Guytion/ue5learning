@@ -49,7 +49,20 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Attributes_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistance.Arcane"), FString(TEXT("奥术抗性")));
     /* 抗性类型结束 */
 
+    /* 元属性 */
+    GameplayTags.Attributes_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Meta.IncomingXP"), FString(TEXT("即将获得的XP")));
+    /* 元属性结束 */
+
+    /* 技能 */
+    GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.None"), FString(TEXT("空技能")));
+    GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString(TEXT("普通攻击")));
+    /* 技能结束 */
+
     GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HitReact"), FString(TEXT("击中反应能力")));
+
+    /* 被动技能 */
+    GameplayTags.Abilities_Passive_ListenForEvent = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Passive.ListenForEvent"), FString(TEXT("监听事件")));
+    /* 被动技能结束 */
 
     /* 技能状态 */
     GameplayTags.Abilities_Status_Locked = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Status.Locked"), FString(TEXT("锁定状态")));
@@ -73,11 +86,6 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     /* 游戏效果 */
     GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"), FString(TEXT("击退反应")));
     /* 游戏效果结束 */
-
-    /* 技能 */
-    GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.None"), FString(TEXT("空技能")));
-    GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString(TEXT("普通攻击")));
-    /* 技能结束 */
 
     /* GameplayCues */
     GameplayTags.GameplayCue_MeleeImpact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GameplayCue.MeleeImpact"), FString(TEXT("近战冲击")));

@@ -297,3 +297,33 @@ int32 AThreeDMobaCharacter::GetCharacterLevel() const
 {
 	return CharacterLevel;
 }
+
+void AThreeDMobaCharacter::Die(const FVector& DeathImpulse)
+{
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	MulticastHandleDeath(DeathImpulse); // 处理死亡逻辑
+}
+
+void AThreeDMobaCharacter::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
+{
+	bDead = true;
+	// UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
+	Weapon->SetSimulatePhysics(true); // 启用物理模拟，让武器掉落到地上
+	Weapon->SetEnableGravity(true); // 启用重力，让武器受到重力影响
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	Weapon->AddImpulse(DeathImpulse); // 死亡冲击
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	GetMesh()->AddImpulse(DeathImpulse * 20.f); // 死亡冲击
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	OnDeathDelegate.Broadcast(this);
+}
+
+FOnDeath& AThreeDMobaCharacter::GetOnDeathDelegate()
+{
+	return OnDeathDelegate;
+}

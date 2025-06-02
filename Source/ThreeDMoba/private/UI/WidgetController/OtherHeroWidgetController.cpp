@@ -26,7 +26,14 @@ void UOtherHeroWidgetController::BindCallbacksToDependencies()
     GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetMaxHealthAttribute()).AddLambda(
         [this](const FOnAttributeChangeData& Data)
         {
-            OnMaxHealthChanged.Broadcast(Data.NewValue);
+            if (Data.NewValue > 0.f)
+            {
+                OnMaxHealthChanged.Broadcast(Data.NewValue);
+            }
+            else
+            {
+                OnMaxHealthChanged.Broadcast(GetHeroAS()->GetMaxHealth());
+            }
         }
     );
     GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetManaAttribute()).AddLambda(
@@ -38,7 +45,14 @@ void UOtherHeroWidgetController::BindCallbacksToDependencies()
     GetHeroASC()->GetGameplayAttributeValueChangeDelegate(GetHeroAS()->GetMaxManaAttribute()).AddLambda(
         [this](const FOnAttributeChangeData& Data)
         {
-            OnMaxManaChanged.Broadcast(Data.NewValue);
+            if (Data.NewValue > 0.f)
+            {
+                OnMaxManaChanged.Broadcast(Data.NewValue);
+            }
+            else
+            {
+                OnMaxManaChanged.Broadcast(GetHeroAS()->GetMaxMana());
+            }
         }
     );
 }

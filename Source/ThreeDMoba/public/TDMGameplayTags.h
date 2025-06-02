@@ -35,11 +35,16 @@ public:
     FGameplayTag Damage_Earth;
     FGameplayTag Damage_Arcane;
 
+    FGameplayTag Abilities_None;
+	FGameplayTag Abilities_Attack;
+
     FGameplayTag Abilities_HitReact;
 	
 	FGameplayTag Abilities_Status_Locked;
 	FGameplayTag Abilities_Status_Eligible;
 	FGameplayTag Abilities_Status_Unlocked;
+
+    FGameplayTag Abilities_Passive_ListenForEvent;
 
     FGameplayTag CombatSocket_Weapon;
 	FGameplayTag CombatSocket_RightHand;
@@ -73,10 +78,9 @@ public:
     FGameplayTag Attributes_Resistance_Earth;
     FGameplayTag Attributes_Resistance_Arcane;
 
-    FGameplayTag Effects_HitReact;
+    FGameplayTag Attributes_Meta_IncomingXP;
 
-    FGameplayTag Abilities_None;
-	FGameplayTag Abilities_Attack;
+    FGameplayTag Effects_HitReact;
 
     FGameplayTag GameplayCue_MeleeImpact;
 

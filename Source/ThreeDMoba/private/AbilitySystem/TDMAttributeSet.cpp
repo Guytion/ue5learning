@@ -2,12 +2,14 @@
 
 
 #include "AbilitySystem/TDMAttributeSet.h"
+#include "AbilitySystem/TDMAbilitySystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "TDMGameplayTags.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 
 UTDMAttributeSet::UTDMAttributeSet()
 {
@@ -269,40 +271,53 @@ void UTDMAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
     {
         SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
     }
-    if (Data.EvaluatedData.Attribute == GetQiAttribute())
-    {
-        if (GetQi() >= GetMaxQi() and GetMaxQi() > 0.f)
-        {
-            SetQiLayers(FMath::Clamp(GetQiLayers() + 1, 0, 99));
-            SetQi(GetQi() - GetMaxQi());
-        }
-    }
     if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
     {
         bFatal = HandleIncomingDamage(Props) || bFatal;
     }
+    ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
     if (bFatal)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Dead")));
+        if (CombatInterface)
+        {
+            // 实现死亡击退
+            FVector DeathImpulse = UTDMAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle);
+            CombatInterface->Die(DeathImpulse);
+        }
+        if (Props.SourceCharacter->Implements<UPlayerInterface>())
+        {
+            SendXPEvent(Props);
+        }
     }
-    
+    if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+    {
+        HandleIncomingXP(Props);
+    }
 }
 
 void UTDMAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
 {
     Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
-    if (Attribute == GetMaxHealthAttribute())
+    if (Attribute == GetMaxHealthAttribute() && bTopOffHealth)
     {
         SetHealth(GetMaxHealth());
+        bTopOffHealth = false;
+        // OnRep_MaxHealth(MaxHealth);
     }
-    if (Attribute == GetMaxManaAttribute())
+    if (Attribute == GetMaxManaAttribute() && bTopOffMana)
     {
         SetMana(GetMaxMana());
+        bTopOffMana = false;
+        // OnRep_MaxMana(MaxMana);
     }
     if (Attribute == GetQiAttribute())
     {
-        //TODO: 如果气大于最大值，则层数+1，气减最大值
+        if (GetQi() >= GetMaxQi() and GetMaxQi() > 0.f)
+        {
+            SetQiLayers(FMath::Clamp(GetQiLayers() + 1, 0, 99));
+            SetQi(GetQi() - GetMaxQi());
+        }
     }
 }
 
@@ -330,4 +345,51 @@ bool UTDMAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
         return bFatal;
     }
     return false;
+}
+
+void UTDMAttributeSet::SendXPEvent(const FEffectProperties& Props)
+{
+    if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+    {
+        const int32 TargetLevel = CombatInterface->GetCharacterLevel();
+        // const ECharacterClass TargetClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+        const int32 XPReward = UTDMAbilitySystemLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter, TargetLevel);
+
+        const FTDMGameplayTags& GameplayTags = FTDMGameplayTags::Get();
+        FGameplayEventData Payload;
+        Payload.EventTag = GameplayTags.Attributes_Meta_IncomingXP;
+        Payload.EventMagnitude = XPReward;
+        UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attributes_Meta_IncomingXP, Payload);
+    }
+}
+
+void UTDMAttributeSet::HandleIncomingXP(const FEffectProperties& Props)
+{
+    const float LocalIncomingXP = GetIncomingXP();
+    SetIncomingXP(0.f);
+    
+    if (Props.SourceCharacter->Implements<UPlayerInterface>())
+    {
+        const int32 CurrentLevel = Cast<ICombatInterface>(Props.SourceCharacter)->GetCharacterLevel();
+        const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
+        const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+
+        const int32 NumLevelUps = NewLevel - CurrentLevel;
+        if (NumLevelUps > 0)
+        {
+            bTopOffHealth = true;
+            bTopOffMana = true;
+            int32 SpellPointsReward = 0;
+            for (int32 i = 0; i < NumLevelUps; i++)
+            {
+                SpellPointsReward += IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel + i);
+            }
+            IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
+            IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
+            IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+        }
+        
+
+        IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+    }
 }

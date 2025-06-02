@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
 #include "TDMPlayerState.generated.h"
 
 class UAttributeSet;
@@ -40,6 +41,9 @@ public:
 
 	void AddToLevel(int32 InLevel);
 	void SetLevel(int32 InLevel);
+
+	UPROPERTY(EditDefaultsOnly, Category = "角色升级信息")
+	TObjectPtr<ULevelUpInfo> LevelUpInfo;
 
 	void AddToAttributePoints(int32 InAttributePoints);
 	void SetAttributePoints(int32 InAttributePoints);

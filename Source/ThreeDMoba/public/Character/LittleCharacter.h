@@ -17,6 +17,13 @@ public:
 	// Sets default values for this character's properties
 	ALittleCharacter();
 
+	/* Combat Interface  */
+	virtual void Die(const FVector& DeathImpulse) override;
+	/* Combat Interface 结束 */
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "小兵|尸体消失时间")
+	float LifeSpan = 5.f;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

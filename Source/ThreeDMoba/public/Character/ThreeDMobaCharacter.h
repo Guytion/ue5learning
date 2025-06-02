@@ -54,9 +54,15 @@ public:
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	virtual int32 GetCharacterLevel() const override;
+	virtual void Die(const FVector& DeathImpulse) override;
+	virtual FOnDeath& GetOnDeathDelegate() override; // 返回值需为地址引用
 	/* Combat Interface 结束 */
 
 	FOnASCRegistered OnASCRegisteredDelegate; // 角色技能系统组件注册事件
+	FOnDeath OnDeathDelegate; // 死亡委托
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDeath(const FVector& DeathImpulse);
 
 protected:
 
@@ -65,6 +71,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Variable")
 	bool bIsAttacking = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bDead = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	UAnimMontage* GetHitMontage;

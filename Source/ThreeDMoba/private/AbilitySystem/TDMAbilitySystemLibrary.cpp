@@ -8,6 +8,9 @@
 #include "TDMAbilityTypes.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ThreeDMoba/ThreeDMoba.h"
+#include "Kismet/GameplayStatics.h"
+#include "Game/ThreeDMobaGameMode.h"
 
 void UTDMAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
@@ -52,6 +55,7 @@ FGameplayEffectContextHandle UTDMAbilitySystemLibrary::ApplyDamageEffect(const F
 
     FGameplayEffectContextHandle EffectContexthandle = DamageEffectParams.SourceAbilitySystemComponent->MakeEffectContext();
     EffectContexthandle.AddSourceObject(SourceAvatarActor);
+    SetDeathImpulse(EffectContexthandle, DamageEffectParams.DeathImpulse);
 
     const FGameplayEffectSpecHandle DamageSpecHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeOutgoingSpec(
         DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, EffectContexthandle);
@@ -60,4 +64,46 @@ FGameplayEffectContextHandle UTDMAbilitySystemLibrary::ApplyDamageEffect(const F
     
     DamageEffectParams.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageSpecHandle.Data);
     return EffectContexthandle;
+}
+
+FVector UTDMAbilitySystemLibrary::GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+    if (const FTDMGameplayEffectContext* TDMContext = static_cast<const FTDMGameplayEffectContext*>(EffectContextHandle.Get()))
+    {
+        return TDMContext->GetDeathImpulse();
+    }
+    return FVector::ZeroVector;
+}
+
+void UTDMAbilitySystemLibrary::SetDeathImpulse(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InImpulse)
+{
+    if (FTDMGameplayEffectContext* TDMContext = static_cast<FTDMGameplayEffectContext*>(EffectContextHandle.Get()))
+    {
+        return TDMContext->SetDeathImpulse(InImpulse);
+    }
+}
+
+void UTDMAbilitySystemLibrary::SetDeathImpulseDirection(UPARAM(ref) FDamageEffectParams& DamageEffectParams, FVector ImpulseDirection, float Magnitude)
+{
+    ImpulseDirection.Normalize();
+    if (Magnitude == 0.f)
+    {
+        DamageEffectParams.DeathImpulse = ImpulseDirection * DamageEffectParams.DeathImpulseMagnitude;
+    }
+    else
+    {
+        DamageEffectParams.DeathImpulse = ImpulseDirection * Magnitude;
+    }
+}
+
+int32 UTDMAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* WorldContextObject, int32 CharacterLevel)
+{
+    const AThreeDMobaGameMode* TDMGameMode = Cast<AThreeDMobaGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
+    if (TDMGameMode == nullptr)
+    {
+        UE_LOG(LogThreeDMoba, Warning, TEXT("无法获取游戏模式，无法计算经验值奖励。"));
+        return 0;
+    }
+    const float XPReward = TDMGameMode->XPReward.GetValueAtLevel(CharacterLevel);
+    return static_cast<int32>(XPReward);
 }

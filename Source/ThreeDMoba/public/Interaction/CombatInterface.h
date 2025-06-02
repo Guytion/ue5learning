@@ -10,6 +10,7 @@
 class UAbilitySystemComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, DeadActor);
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -82,4 +83,7 @@ public:
 	FTaggedMontage GetTaggedMontageByTag(const FGameplayTag& MontageTag);
 
 	virtual int32 GetCharacterLevel() const = 0;
+	virtual void Die(const FVector& DeathImpulse) = 0; // 死亡逻辑，纯虚函数，必须实现
+
+	virtual FOnDeath& GetOnDeathDelegate() = 0; // 返回值需为地址引用
 };

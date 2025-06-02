@@ -34,6 +34,12 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite)
 	FGameplayTag DamageType = FGameplayTag();
+
+	UPROPERTY(BlueprintReadWrite)
+	float DeathImpulseMagnitude = 0.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector DeathImpulse = FVector::ZeroVector;
 };
 
 USTRUCT(BlueprintType)
@@ -71,6 +77,7 @@ public:
 
 	bool IsCriticalHit() const { return bIsCriticalHit; }
 	bool IsMissed() const { return bIsMissed; }
+	FVector GetDeathImpulse() const { return DeathImpulse; }
 	
 	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
 
@@ -78,6 +85,7 @@ public:
 
 	void SetIsCriticalHit(bool InIsCriticalHit) { bIsCriticalHit = InIsCriticalHit; }
 	void SetIsMissed(bool InIsMissed) { bIsMissed = InIsMissed; }
+	void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse; }
 
 protected:
 
@@ -88,6 +96,9 @@ protected:
 
 	UPROPERTY()
 	bool bIsMissed = false;
+
+	UPROPERTY()
+	FVector DeathImpulse = FVector::ZeroVector;
 };
 
 template<>

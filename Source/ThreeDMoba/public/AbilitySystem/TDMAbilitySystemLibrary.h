@@ -32,4 +32,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GAS蓝图函数库|游戏机制", meta = (DisplayName = "应用伤害效果"))
 	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& DamageEffectParams);
 
+	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, int32 CharacterLevel);
+
+	/* 游戏效果 */
+
+	UFUNCTION(BlueprintPure, Category = "GAS蓝图函数库|游戏效果", meta = (DisplayName = "获取死亡击退"))
+	static FVector GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintCallable, Category = "GAS蓝图函数库|游戏效果", meta = (DisplayName = "设置死亡击退"))
+	static void SetDeathImpulse(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InImpulse);
+
+	/* 伤害效果参数 */
+
+	UFUNCTION(BlueprintCallable, Category = "GAS蓝图函数库|伤害效果", meta = (DisplayName = "设置死亡击退方向"))
+	static void SetDeathImpulseDirection(UPARAM(ref) FDamageEffectParams& DamageEffectParams, FVector ImpulseDirection, float Magnitude = 0.f);
 };

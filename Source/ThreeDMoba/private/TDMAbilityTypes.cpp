@@ -47,10 +47,13 @@ bool FTDMGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Ma
 		{
 			RepBits |= 1 << 9;
 		}
-		
+		if (!DeathImpulse.IsZero())
+		{
+			RepBits |= 1 << 10;
+		}
 	}
 
-    Ar.SerializeBits(&RepBits, 10);
+    Ar.SerializeBits(&RepBits, 11);
 
     if (RepBits & (1 << 0))
 	{
@@ -111,7 +114,11 @@ bool FTDMGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Ma
 	{
 		Ar << bIsMissed;
 	}
-
+	if (RepBits & (1 << 10))
+	{
+		DeathImpulse.NetSerialize(Ar, Map, bOutSuccess);
+	}
+	
 	if (Ar.IsLoading())
 	{
 		AddInstigator(Instigator.Get(), EffectCauser.Get()); // 为了初始化发起者(Instigator)AbilitySystemComponent
