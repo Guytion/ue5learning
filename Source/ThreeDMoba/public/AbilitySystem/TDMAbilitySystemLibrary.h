@@ -34,6 +34,12 @@ public:
 
 	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, int32 CharacterLevel);
 
+	UFUNCTION(BlueprintPure, Category = "GAS蓝图函数库|游戏机制")
+	static TArray<FRotator> EvenlySpacedRotators(const FVector& Forward, const FVector& Axis, float Spread, int32 NumRotators);
+
+	UFUNCTION(BlueprintPure, Category = "GAS蓝图函数库|游戏机制")
+	static TArray<FVector> EvenlyRotatedVectors(const FVector& Forward, const FVector& Axis, float Spread, int32 NumVectors);
+
 	/* 游戏效果 */
 
 	UFUNCTION(BlueprintPure, Category = "GAS蓝图函数库|游戏效果", meta = (DisplayName = "获取死亡击退"))

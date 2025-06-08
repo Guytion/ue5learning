@@ -21,9 +21,11 @@ public:
 
     /* 键鼠输入 */
     FGameplayTag InputTag_KeyMouse_LMB;
+    FGameplayTag InputTag_KeyMouse_1;
     /* 键鼠输入 结束 */
 
     /* 手柄输入 */
+    FGameplayTag InputTag_Joystick_Xbox_RT;
     FGameplayTag InputTag_Joystick_Xbox_X;
     /* 手柄输入 结束 */
 
