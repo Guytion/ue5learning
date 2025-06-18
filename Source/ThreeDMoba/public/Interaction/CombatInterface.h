@@ -86,4 +86,10 @@ public:
 	virtual void Die(const FVector& DeathImpulse) = 0; // 死亡逻辑，纯虚函数，必须实现
 
 	virtual FOnDeath& GetOnDeathDelegate() = 0; // 返回值需为地址引用
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsDead() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetAvatar();
 };

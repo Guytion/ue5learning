@@ -11,6 +11,7 @@
 #include "ThreeDMoba/ThreeDMoba.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/ThreeDMobaGameMode.h"
+#include "Interaction/CombatInterface.h"
 
 void UTDMAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
@@ -56,6 +57,10 @@ FGameplayEffectContextHandle UTDMAbilitySystemLibrary::ApplyDamageEffect(const F
     FGameplayEffectContextHandle EffectContexthandle = DamageEffectParams.SourceAbilitySystemComponent->MakeEffectContext();
     EffectContexthandle.AddSourceObject(SourceAvatarActor);
     SetDeathImpulse(EffectContexthandle, DamageEffectParams.DeathImpulse);
+    SetIsRadialDamage(EffectContexthandle, DamageEffectParams.bIsRadialDamage);
+    SetRadialDamageInnerRadius(EffectContexthandle, DamageEffectParams.RadialDamageInnerRadius);
+    SetRadialDamageOuterRadius(EffectContexthandle, DamageEffectParams.RadialDamageOuterRadius);
+    SetRadialDamageOrigin(EffectContexthandle, DamageEffectParams.RadialDamageOrigin);
 
     const FGameplayEffectSpecHandle DamageSpecHandle = DamageEffectParams.SourceAbilitySystemComponent->MakeOutgoingSpec(
         DamageEffectParams.DamageGameplayEffectClass, DamageEffectParams.AbilityLevel, EffectContexthandle);
@@ -148,4 +153,71 @@ TArray<FVector> UTDMAbilitySystemLibrary::EvenlyRotatedVectors(const FVector& Fo
         Vectors.Add(Forward);
     }
     return Vectors;
+}
+
+void UTDMAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorToIgnore, float Radius, const FVector& SphereOrigin)
+{
+    FCollisionQueryParams SphereParams;
+    SphereParams.AddIgnoredActors(ActorToIgnore);
+
+    TArray<FOverlapResult> Overlaps;
+    if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+    {
+        World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(Radius), SphereParams);
+        for (const FOverlapResult& Overlap : Overlaps)
+        {
+            if (Overlap.GetActor()->Implements<UCombatInterface>())
+            {
+                if (!ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+                {
+                    OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+                }
+            }
+        }
+    }
+}
+
+void UTDMAbilitySystemLibrary::SetIsRadialDamageEffectParam(UPARAM(ref) FDamageEffectParams& DamageEffectParams, bool bIsRadial, float InnerRadius, float OuterRadius, FVector Origin)
+{
+    DamageEffectParams.bIsRadialDamage = bIsRadial;
+    DamageEffectParams.RadialDamageInnerRadius = InnerRadius;
+    DamageEffectParams.RadialDamageOuterRadius = OuterRadius;
+    DamageEffectParams.RadialDamageOrigin = Origin;
+}
+
+void UTDMAbilitySystemLibrary::SetTargetEffectParamsASC(UPARAM(ref) FDamageEffectParams& DamageEffectParams, UAbilitySystemComponent* InASC)
+{
+    DamageEffectParams.TargetAbilitySystemComponent = InASC;
+}
+
+void UTDMAbilitySystemLibrary::SetIsRadialDamage(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bInIsRadialDamage)
+{
+    if (FTDMGameplayEffectContext* EffectContext = static_cast<FTDMGameplayEffectContext*>(EffectContextHandle.Get())) // static_cast是C++的类型转换，转换时不能忽视指针属性，和UE5引擎的Cast<>()不同，需要手动处理指针属性。
+    {
+        EffectContext->SetIsRadialDamage(bInIsRadialDamage);
+    }
+}
+
+void UTDMAbilitySystemLibrary::SetRadialDamageInnerRadius(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, float InRadialDamageInnerRadius)
+{
+    if (FTDMGameplayEffectContext* EffectContext = static_cast<FTDMGameplayEffectContext*>(EffectContextHandle.Get())) // static_cast是C++的类型转换，转换时不能忽视指针属性，和UE5引擎的Cast<>()不同，需要手动处理指针属性。
+    {
+        EffectContext->SetRadialDamageInnerRadius(InRadialDamageInnerRadius);
+    }
+}
+
+void UTDMAbilitySystemLibrary::SetRadialDamageOuterRadius(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, float InRadialDamageOuterRadius)
+{
+    if (FTDMGameplayEffectContext* EffectContext = static_cast<FTDMGameplayEffectContext*>(EffectContextHandle.Get())) // static_cast是C++的类型转换，转换时不能忽视指针属性，和UE5引擎的Cast<>()不同，需要手动处理指针属性。
+    {
+        EffectContext->SetRadialDamageOuterRadius(InRadialDamageOuterRadius);
+    }
+}
+
+void UTDMAbilitySystemLibrary::SetRadialDamageOrigin(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InRadialDamageOrigin)
+{
+    if (FTDMGameplayEffectContext* EffectContext = static_cast<FTDMGameplayEffectContext*>(EffectContextHandle.Get())) // static_cast是C++的类型转换，转换时不能忽视指针属性，和UE5引擎的Cast<>()不同，需要手动处理指针属性。
+    {
+        EffectContext->SetRadialDamageOrigin(InRadialDamageOrigin);
+    }
 }

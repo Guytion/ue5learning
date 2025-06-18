@@ -22,11 +22,11 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "从类默认值中计算伤害效果参数"))
 	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(
 		AActor* TargetActor = nullptr,
-		// FVector InRadialDamageOrigin = FVector::ZeroVector,
+		FVector InRadialDamageOrigin = FVector::ZeroVector,
 		// bool bOverrideKnockbackDirection = false,
 		// FVector KnockbackDirectionOverride = FVector::ZeroVector,
-		// bool bOverrideDeathImpulse = false,
-		// FVector DeathImpulseDirectionOverride = FVector::ZeroVector,
+		bool bOverrideDeathImpulse = false,
+		FVector DeathImpulseDirectionOverride = FVector::ZeroVector,
 		bool bOverridePitch = false,
 		float PitchOverride = 0.f
 	) const;
@@ -44,4 +44,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="伤害", meta = (DisplayName = "伤害系数"))
 	FScalableFloat Damage;
+
+	UPROPERTY(EditDefaultsOnly, Category="伤害", meta = (DisplayName = "死亡冲击"))
+	float DeathImpulseMagnitude = 1800.f;
+
+	UPROPERTY(EditDefaultsOnly, Category="伤害", meta = (DisplayName = "是否范围伤害"))
+	bool bIsRadialDamage = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="伤害", meta = (DisplayName = "范围伤害内径"))
+	float RadialDamageInnerRadius = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="伤害", meta = (DisplayName = "范围伤害外径"))
+	float RadialDamageOuterRadius = 0.f;
 };

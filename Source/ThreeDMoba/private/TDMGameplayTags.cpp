@@ -91,6 +91,7 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
 
     /* GameplayCues */
     GameplayTags.GameplayCue_MeleeImpact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GameplayCue.MeleeImpact"), FString(TEXT("近战冲击")));
+    GameplayTags.GameplayCue_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GameplayCue.FireBlast"), FString(TEXT("火焰爆发")));
     /* GameplayCues 结束 */
 
     /* 伤害与抗性的对应关系 */
@@ -101,4 +102,8 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Earth, GameplayTags.Attributes_Resistance_Earth);
     GameplayTags.DamageTypestoResistances.Add(GameplayTags.Damage_Arcane, GameplayTags.Attributes_Resistance_Arcane);
     /* 伤害与抗性的对应关系结束 */
+
+    /* 技能冷却 */
+    GameplayTags.Cooldown_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Fire.FireBlast"), FString(TEXT("火焰爆发CD")));
+    /* 技能冷却结束 */
 }

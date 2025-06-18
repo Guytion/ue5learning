@@ -327,3 +327,13 @@ FOnDeath& AThreeDMobaCharacter::GetOnDeathDelegate()
 {
 	return OnDeathDelegate;
 }
+
+bool AThreeDMobaCharacter::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* AThreeDMobaCharacter::GetAvatar_Implementation()
+{
+	return this;
+}

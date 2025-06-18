@@ -36,6 +36,9 @@ void UTDMDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 
 FDamageEffectParams UTDMDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(
     AActor* TargetActor,
+    FVector InRadialDamageOrigin,
+    bool bOverrideDeathImpulse,
+	FVector DeathImpulseDirectionOverride,
     bool bOverridePitch,
     float PitchOverride
 ) const
@@ -48,6 +51,7 @@ FDamageEffectParams UTDMDamageGameplayAbility::MakeDamageEffectParamsFromClassDe
     Params.BaseDamage = GetDamageAtLevel();
     Params.AbilityLevel = GetAbilityLevel();
     Params.DamageType = DamageType;
+    Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
 
     if (IsValid(TargetActor))
     {
@@ -57,6 +61,26 @@ FDamageEffectParams UTDMDamageGameplayAbility::MakeDamageEffectParamsFromClassDe
             Rotation.Pitch = PitchOverride;
         }
         
+    }
+
+    if (bOverrideDeathImpulse)
+    {
+        DeathImpulseDirectionOverride.Normalize();
+        Params.DeathImpulse = DeathImpulseDirectionOverride * DeathImpulseMagnitude;
+        if (bOverridePitch)
+        {
+            FRotator DeathImpulseRotation = DeathImpulseDirectionOverride.Rotation();
+            DeathImpulseRotation.Pitch = PitchOverride;
+            Params.DeathImpulse = DeathImpulseRotation.Vector() * DeathImpulseMagnitude;
+        }
+    }
+    
+    if (bIsRadialDamage)
+    {
+        Params.bIsRadialDamage = bIsRadialDamage;
+        Params.RadialDamageInnerRadius = RadialDamageInnerRadius;
+        Params.RadialDamageOuterRadius = RadialDamageOuterRadius;
+        Params.RadialDamageOrigin = InRadialDamageOrigin;
     }
 
     return Params;

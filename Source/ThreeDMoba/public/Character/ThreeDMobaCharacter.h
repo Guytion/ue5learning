@@ -56,6 +56,8 @@ public:
 	virtual int32 GetCharacterLevel() const override;
 	virtual void Die(const FVector& DeathImpulse) override;
 	virtual FOnDeath& GetOnDeathDelegate() override; // 返回值需为地址引用
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override; // 获取角色的Actor，通常就是自身
 	/* Combat Interface 结束 */
 
 	FOnASCRegistered OnASCRegisteredDelegate; // 角色技能系统组件注册事件

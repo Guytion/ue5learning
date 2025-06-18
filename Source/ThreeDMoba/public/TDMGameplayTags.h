@@ -85,9 +85,12 @@ public:
     FGameplayTag Effects_HitReact;
 
     FGameplayTag GameplayCue_MeleeImpact;
+    FGameplayTag GameplayCue_FireBlast;
 
     TArray<FGameplayTag> DamageTypes;
 	TMap<FGameplayTag, FGameplayTag> DamageTypestoResistances; // 损伤类型到抗性的映射
+
+    FGameplayTag Cooldown_Fire_FireBlast;
 
 private:
 

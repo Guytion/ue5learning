@@ -5,11 +5,13 @@
 #include "Components/AudioComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/TDMAbilitySystemLibrary.h"
+#include "GameplayCueManager.h"
+#include "TDMGameplayTags.h"
 
 void AFireBall::BeginPlay()
 {
     Super::BeginPlay();
-    StartOutgoingTimeline();
+	StartOutgoingTimeline();
 }
 
 void AFireBall::OnSphereOverlap(
@@ -35,6 +37,13 @@ void AFireBall::OnSphereOverlap(
 
 void AFireBall::OnHit()
 {
+	if (GetOwner())
+	{
+		FGameplayCueParameters CueParams;
+		CueParams.Location = GetActorLocation();
+		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(GetOwner(), FTDMGameplayTags::Get().GameplayCue_FireBlast, CueParams);
+	}
+
     if (LoopingSoundComponent)
 	{
 		LoopingSoundComponent->Stop();
