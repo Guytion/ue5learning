@@ -12,6 +12,7 @@
 class UTDMAbilitySystemComponent;
 class UAbilitySystemComponent;
 class UAttributeSet;
+class UAbilityInfo;
 
 USTRUCT(BlueprintType)
 struct FWidgetControllerParams
@@ -38,7 +39,7 @@ struct FWidgetControllerParams
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangedSignature, int32, StatValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
-// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FTDMAbilityInfo&, Info);
 /**
  * 
  */
@@ -73,8 +74,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UTDMAttributeSet> TDMAttributeSet;
 
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "控件数据")
-	// TObjectPtr<UAbilityInfo> AbilityInfo;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "控件数据", meta = (DisplayName = "技能信息"))
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 
 	ATDMPlayerController* GetHeroPC();
 	ATDMPlayerState* GetHeroPS();
@@ -91,9 +92,9 @@ public:
 
 	virtual void BindCallbacksToDependencies();
 
-	// UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
-	// FAbilityInfoSignature AbilityInfoDelegate;
+	UPROPERTY(BlueprintAssignable, Category = "GAS|信息")
+	FAbilityInfoSignature AbilityInfoDelegate;
 
 	// 广播技能信息
-	// void BroadcastAbilityInfo();
+	void BroadcastAbilityInfo();
 };

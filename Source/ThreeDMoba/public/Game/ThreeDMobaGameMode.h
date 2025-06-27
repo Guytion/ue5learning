@@ -7,6 +7,8 @@
 #include "ScalableFloat.h"
 #include "ThreeDMobaGameMode.generated.h"
 
+class UAbilityInfo;
+
 UCLASS(minimalapi)
 class AThreeDMobaGameMode : public AGameModeBase
 {
@@ -17,6 +19,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "基础数据", meta = (DisplayName = "经验值奖励"))
 	FScalableFloat XPReward = FScalableFloat();
+
+	UPROPERTY(EditAnywhere, meta = (DisplayName = "技能信息"))
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 };
 
 

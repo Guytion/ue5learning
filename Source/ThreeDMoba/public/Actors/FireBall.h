@@ -38,4 +38,9 @@ protected:
 	) override;
 
 	virtual void OnHit() override;
+
+private:
+
+	float LastOverlapTime = 0.0f;
+	float OverlapDuration = 0.1f; // 0.1秒碰撞间隔时间
 };

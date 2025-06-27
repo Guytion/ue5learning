@@ -58,6 +58,37 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
         }
     );
 
+    if (GetHeroASC())
+    {
+        // GetHeroASC()->AbilityEquipped.AddUObject(this, &UOverlayWidgetController::OnAbilityEquipped);
+        if (GetHeroASC()->bStartupAbilitiesGiven)
+        {
+            BroadcastAbilityInfo();
+        }
+        else
+        {
+            GetHeroASC()->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
+        }
+
+        /* GetHeroASC()->EffectAssetTags.AddLambda(
+            [this](const FGameplayTagContainer& AssetTags)
+            {
+                // GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::White, FString("Pickup"));
+                for (const FGameplayTag& Tag : AssetTags)
+                {
+                    // 举个例子，比如 Tag = Message.HealthPotion
+                    // "Message.HealthPotion".MatchesTag("Message") 会返回true，"Message".MatchesTag("Message.HealthPotion") 会返回false
+                    FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+                    if (Tag.MatchesTag(MessageTag))
+                    {
+                        const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag); // 这里会触发DataTable的加载，从而触发事件绑定
+                        MessageWidgetRowDelegate.Broadcast(*Row);
+                    }
+                }
+            }
+        ); */
+    }
+
     GetHeroPS()->OnLevelChangedDelegate.AddLambda(
         [this](int32 NewLevel)
         {

@@ -22,6 +22,10 @@ void AFireBall::OnSphereOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult
 ) {
+	if (GetWorld()->TimeSince(LastOverlapTime) < OverlapDuration)
+	{
+		return; // 未到时间，直接返回
+	}
 	if (HasAuthority() && IsValidOverLap(OtherActor))
 	{
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
@@ -31,6 +35,7 @@ void AFireBall::OnSphereOverlap(
 			
 			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 			UTDMAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams); // 伤害结算
+			LastOverlapTime = GetWorld()->TimeSeconds; // 更新最后触发时间
 		}
 	}
 }

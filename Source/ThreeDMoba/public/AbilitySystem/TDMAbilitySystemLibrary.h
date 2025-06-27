@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GAS蓝图函数库|角色属性默认值", meta = (DisplayName = "授予初始技能", DefaultToSelf = "WorldContextObject"))
 	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
 
+	UFUNCTION(BlueprintCallable, Category = "GAS蓝图函数库|角色属性默认值", meta = (DisplayName = "获取技能信息", DefaultToSelf = "WorldContextObject"))
+	static UAbilityInfo* GetAbilityInfo(const UObject* WorldContextObject);
+
 	/* 游戏机制 */
 
 	UFUNCTION(BlueprintCallable, Category = "GAS蓝图函数库|游戏机制", meta = (DisplayName = "是否友好"))

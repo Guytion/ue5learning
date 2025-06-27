@@ -22,6 +22,10 @@ void UWeaponMeshComponent::OnOverlap_Implementation(
     bool bFromSweep,
     const FHitResult& SweepResult
 ) {
+    if (GetWorld()->TimeSince(LastOverlapTime) < OverlapDuration)
+	{
+		return; // 未到时间，直接返回
+	}
     if (IsValidOverlap(OtherActor))
     {
         WeaponHitResult = SweepResult;
@@ -29,6 +33,7 @@ void UWeaponMeshComponent::OnOverlap_Implementation(
         {
             DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
             UTDMAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams); // 伤害结算
+            LastOverlapTime = GetWorld()->TimeSeconds; // 更新最后触发时间
         }
     }
 }

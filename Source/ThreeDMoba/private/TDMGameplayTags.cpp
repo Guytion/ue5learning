@@ -58,6 +58,7 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     /* 技能 */
     GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.None"), FString(TEXT("空技能")));
     GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString(TEXT("普通攻击")));
+    GameplayTags.Abilities_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Fire.FireBlast"), FString(TEXT("火焰爆发")));
     /* 技能结束 */
 
     GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HitReact"), FString(TEXT("击中反应能力")));

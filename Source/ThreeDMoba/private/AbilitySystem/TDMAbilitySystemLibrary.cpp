@@ -221,3 +221,11 @@ void UTDMAbilitySystemLibrary::SetRadialDamageOrigin(UPARAM(ref) FGameplayEffect
         EffectContext->SetRadialDamageOrigin(InRadialDamageOrigin);
     }
 }
+
+UAbilityInfo* UTDMAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldContextObject)
+{
+    const AThreeDMobaGameMode* GameMode = Cast<AThreeDMobaGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
+    if (GameMode == nullptr) return nullptr;
+
+    return GameMode->AbilityInfo;
+}

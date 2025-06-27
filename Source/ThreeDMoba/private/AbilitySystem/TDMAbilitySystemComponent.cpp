@@ -4,6 +4,9 @@
 #include "AbilitySystem/TDMAbilitySystemComponent.h"
 #include "TDMGameplayTags.h"
 #include "AbilitySystem/Abilities/TDMGameplayAbility.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
+#include "AbilitySystem/TDMAbilitySystemLibrary.h"
+#include "ThreeDMoba/ThreeDMoba.h"
 
 void UTDMAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -103,19 +106,95 @@ void UTDMAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 
 void UTDMAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
 {
-    /* UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
-    for (const FAuraAbilityInfo& Info : AbilityInfo->AbilityInformation)
+    UAbilityInfo* AbilityInfo = UTDMAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+    for (const FTDMAbilityInfo& Info : AbilityInfo->AbilityInformation)
     {
         if (!Info.AbilityTag.IsValid()) continue;
         if (Level < Info.LevelRequirement) continue;
         if (GetSpecFromAbilityTag(Info.AbilityTag) == nullptr)
         {
             FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
-            FGameplayTag StatusTag = FAuraGameplayTags::Get().Abilities_Status_Eligible;
+            FGameplayTag StatusTag = FTDMGameplayTags::Get().Abilities_Status_Eligible;
             AbilitySpec.DynamicAbilityTags.AddTag(StatusTag);
             GiveAbility(AbilitySpec);
             MarkAbilitySpecDirty(AbilitySpec); // 在技能被授予之后标记为脏，以便同步到客户端
             ClientUpdateAbilityStatus(Info.AbilityTag, StatusTag, 1);
         }
-    } */
+    }
+}
+
+void UTDMAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate)
+{
+    FScopedAbilityListLock ActiveScopeLock(*this); // 锁定能力列表以确保线程安全。
+    for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+    {
+        if (!Delegate.ExecuteIfBound(AbilitySpec))
+        {
+            UE_LOG(LogThreeDMoba, Error, TEXT("执行委托失败，%hs"), __FUNCTION__);
+        }
+    }
+}
+
+FGameplayTag UTDMAbilitySystemComponent::GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+    if (AbilitySpec.Ability)
+    {
+        for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+        {
+            if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities"))))
+            {
+                return Tag;
+            }
+        }
+    }
+    return FGameplayTag();
+}
+
+FGameplayTag UTDMAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+    for (FGameplayTag Tag : AbilitySpec.DynamicAbilityTags)
+    {
+        if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
+        {
+            return Tag;
+        }
+    }
+    return FGameplayTag();
+}
+
+FGameplayTag UTDMAbilitySystemComponent::GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+    for (FGameplayTag StatusTag : AbilitySpec.DynamicAbilityTags)
+    {
+        if (StatusTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities.Status"))))
+        {
+            return StatusTag;
+        }
+    }
+    return FGameplayTag();
+}
+
+FGameplayAbilitySpec* UTDMAbilitySystemComponent::GetSpecFromAbilityTag(const FGameplayTag& AbilityTag)
+{
+    FScopedAbilityListLock ActiveScopeLoc(*this);
+    for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+    {
+        for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+        {
+            if (Tag.MatchesTag(AbilityTag))
+            {
+                return &AbilitySpec;
+            }
+        }
+    }
+    return nullptr;
+}
+
+void UTDMAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(
+    const FGameplayTag& AbilityTag,
+    const FGameplayTag& StatusTag,
+    int32 AbilityLevel
+)
+{
+    AbilityStatusChanged.Broadcast(AbilityTag, StatusTag, AbilityLevel);
 }
