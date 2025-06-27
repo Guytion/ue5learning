@@ -198,3 +198,14 @@ void UTDMAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(
 {
     AbilityStatusChanged.Broadcast(AbilityTag, StatusTag, AbilityLevel);
 }
+
+void UTDMAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+    Super::OnRep_ActivateAbilities();
+
+    if (!bStartupAbilitiesGiven)
+    {
+        bStartupAbilitiesGiven = true;
+        AbilitiesGivenDelegate.Broadcast();
+    }
+}

@@ -70,4 +70,5 @@ protected:
 		int32 AbilityLevel
 	);
 
+	virtual void OnRep_ActivateAbilities() override;
 };
