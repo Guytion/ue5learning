@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "AbilitySystem/TDMAbilitySystemComponent.h"
+#include "UI/Widget/LevelUpComponent.h"
 #include "TDMPlayerController.generated.h"
 
 class UInputMappingContext;
@@ -25,6 +26,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Variable")
 	bool bIsLocked = false;
+
+	UFUNCTION(Client, Reliable)
+	void ShowLevelup();
 
 protected:
 
@@ -109,4 +113,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	TObjectPtr<UInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, Category = "角色升级", meta = (DisplayName = "升级控件组件类"))
+	TSubclassOf<ULevelUpComponent> LevelUpComponentClass;
 };

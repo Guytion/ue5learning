@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Interaction/PlayerInterface.h"
 #include "ActorComponent/TDMWidgetComponent.h"
+#include "NiagaraComponent.h"
 #include "HeroCharacter.generated.h"
 
 class UGameplayAbility;
@@ -54,6 +55,9 @@ public:
 	virtual int32 GetCharacterLevel() const override;
 	/* Combat Interface 结束 */
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (DisplayName = "升级特效组件"))
+	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
+
 protected:
 
 	/** Camera boom positioning the camera behind the character */
@@ -86,4 +90,7 @@ private:
 	TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities; // 起始被动技能为监听经验值
 
 	bool bHighlighted = false; // 用于记录当前是否高亮显示
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLevelUpParticles() const;
 };

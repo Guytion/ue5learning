@@ -27,6 +27,10 @@ AHeroCharacter::AHeroCharacter()
 	HeroStatusBar->SetupAttachment(RootComponent);
 	HeroStatusBar->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
 
+	LevelUpNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUpNiagaraComponent"));
+    LevelUpNiagaraComponent->SetupAttachment(GetRootComponent());
+    LevelUpNiagaraComponent->bAutoActivate = false;
+
 }
 void AHeroCharacter::PossessedBy(AController* NewController)
 {
@@ -142,7 +146,7 @@ void AHeroCharacter::AddToXP_Implementation(int32 InXP)
 {
 	if (ATDMPlayerState* TDMPlayerState = Cast<ATDMPlayerState>(GetPlayerState()))
 	{
-		return TDMPlayerState->AddToXP(InXP);
+		TDMPlayerState->AddToXP(InXP);
 	}
 }
 
@@ -187,4 +191,21 @@ void AHeroCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)
 void AHeroCharacter::LevelUp_Implementation()
 {
 	ApplyEffectToSelf(DefaultPrimaryAttributes, GetCharacterLevel());
+	if (ATDMPlayerController* PlayerController = Cast<ATDMPlayerController>(GetController()))
+	{
+		PlayerController->ShowLevelup();
+	}
+	MulticastLevelUpParticles();
+}
+
+void AHeroCharacter::MulticastLevelUpParticles_Implementation() const
+{
+    if (IsValid(LevelUpNiagaraComponent))
+    {
+        // const FVector CameraLocation = FollowCamera->GetComponentLocation();
+        const FVector NiagaraSystemLocation = LevelUpNiagaraComponent->GetComponentLocation();
+        // const FRotator ToCameraRotation = (CameraLocation - NiagaraSystemLocation).Rotation();
+        // LevelUpNiagaraComponent->SetWorldRotation(ToCameraRotation);
+        LevelUpNiagaraComponent->Activate(true);
+    }
 }

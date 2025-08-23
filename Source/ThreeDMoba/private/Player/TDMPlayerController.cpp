@@ -311,3 +311,15 @@ void ATDMPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
     if (GetASC()) GetASC()->AbilityInputTagHeld(InputTag);
 }
+
+void ATDMPlayerController::ShowLevelup_Implementation()
+{
+    if (LevelUpComponentClass && IsLocalController())
+    {
+        ULevelUpComponent* LevelUpComponent = NewObject<ULevelUpComponent>(GetPawn(), LevelUpComponentClass);
+        LevelUpComponent->RegisterComponent();
+        LevelUpComponent->AttachToComponent(GetPawn()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+        LevelUpComponent->LevelUp();
+        LevelUpComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+    }
+}
