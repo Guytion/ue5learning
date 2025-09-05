@@ -22,11 +22,13 @@ public:
     /* 键鼠输入 */
     FGameplayTag InputTag_KeyMouse_LMB;
     FGameplayTag InputTag_KeyMouse_1;
+    FGameplayTag InputTag_KeyMouse_2;
     /* 键鼠输入 结束 */
 
     /* 手柄输入 */
     FGameplayTag InputTag_Joystick_Xbox_RT;
     FGameplayTag InputTag_Joystick_Xbox_X;
+    FGameplayTag InputTag_Joystick_Xbox_Y;
     /* 手柄输入 结束 */
 
     FGameplayTag Damage;

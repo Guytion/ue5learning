@@ -26,9 +26,11 @@ void FTDMGameplayTags::InitializeNativeGameplayTags()
     /* 输入标签 */
     GameplayTags.InputTag_KeyMouse_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.KeyMouse.LMB"), FString(TEXT("鼠标左键")));
     GameplayTags.InputTag_KeyMouse_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.KeyMouse.1"), FString(TEXT("1键")));
+    GameplayTags.InputTag_KeyMouse_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.KeyMouse.2"), FString(TEXT("2键")));
     
     GameplayTags.InputTag_Joystick_Xbox_RT = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Joystick.Xbox_RT"), FString(TEXT("游戏手柄右板机轴")));
     GameplayTags.InputTag_Joystick_Xbox_X = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Joystick.Xbox_X"), FString(TEXT("游戏手柄正面按钮左")));
+    GameplayTags.InputTag_Joystick_Xbox_Y = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Joystick.Xbox_Y"), FString(TEXT("游戏手柄正面按钮上")));
     /* 输入标签结束*/
 
     /* 伤害类型 */
